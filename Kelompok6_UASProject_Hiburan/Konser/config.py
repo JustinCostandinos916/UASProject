@@ -7,5 +7,5 @@ class Config:
             host='localhost',
             user='root',
             password='',
-            database='',
+            database='tiketkonser',
         )
