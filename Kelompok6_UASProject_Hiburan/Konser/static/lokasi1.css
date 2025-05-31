@@ -1,0 +1,5 @@
+import os, math
+def greeting():
+    print("Hello World")
+
+greeting()
