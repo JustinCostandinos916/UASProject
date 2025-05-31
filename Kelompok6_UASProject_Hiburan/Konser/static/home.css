@@ -1,0 +1,15 @@
+.titles {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    background-color: #4B0082;
+    padding: 15px 20px;
+}
+
+.titles a {
+    color: white;
+    text-decoration: none;
+    font-size: 30px; /* gedein text */
+    font-weight: bold;
+}
