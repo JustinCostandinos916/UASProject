@@ -7,8 +7,8 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open about.html",
-            "file": "d:\\UASProject\\Kelompok6_UASProject_Hiburan\\Konser\\templates\\about.html"
+            "name": "Open home.html",
+            "file": "d:\\UASProject\\Kelompok6_UASProject_Hiburan\\Konser\\templates\\home.html"
         }
     ]
 }
