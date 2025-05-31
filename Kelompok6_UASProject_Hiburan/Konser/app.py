@@ -8,3 +8,12 @@ class Portal:
         self.app.secret_key = '!@#$123456&*()'
         self.con = Config()
         self.routes()
+
+    def routes(self):
+        @self.app.route("/")
+        def home():
+            return render_template("home.html")
+
+if __name__ == "__main__":
+    portal = Portal()
+    portal.app.run(debug=True)
