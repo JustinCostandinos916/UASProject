@@ -19,7 +19,7 @@ class TiketKonserApp:
 
         @self.app.route('/login/')
         def login():
-            return render_template('loginregister.html', form="login")
+            return render_template('login.html')
         
         @self.app.route('/login/process', methods=['POST'])
         def loginprocess():
@@ -43,7 +43,7 @@ class TiketKonserApp:
         
         @self.app.route('/register/')
         def register():
-            return render_template('loginregister.html', form="register")
+            return render_template('register.html')
         
         @self.app.route('/register/process', methods=['POST'])
         def registerprocess():
@@ -176,7 +176,7 @@ class TiketKonserApp:
             return render_template('contactus.html')
 
     def run(self):
-        self.app.run(debug=True)
+        self.app.run(debug=True, port=5000)
 
 if __name__ == '__main__':
     app = TiketKonserApp()
