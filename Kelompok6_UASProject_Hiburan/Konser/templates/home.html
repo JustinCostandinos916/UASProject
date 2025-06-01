@@ -6,17 +6,31 @@
     <link rel="stylesheet" href="{{url_for('static',filename='home.css')}}" />
     <title>Home</title>
   </head>
-  <body>
 <header>
     <h1>Greg's<span class="pink">Tour</span></h1>
-    <a href="login.html" class="login-btn">Login</a>
+    <a href="{{url_for('login')}}" class="login-btn">{{a}}</a>
 </header>
 
 <main>
     <div class="card-container">
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
+<div class="tour-card">
+  <a href="lokasi1.html">
+    <img src="jakarta.jpg" alt="Jakarta" />
+  </a>
+</div>
+
+<div class="tour-card">
+  <a href="lokasi2.html">
+    <img src="bandung.jpg" alt="Bandung" />
+  </a>
+</div>
+
+<div class="tour-card">
+  <a href="lokasi3.html">
+    <img src="surabaya.jpg" alt="Surabaya" />
+  </a>
+</div>
+
     </div>
     <p class="desc">This concert will take place in several places!</p>
 </main>
