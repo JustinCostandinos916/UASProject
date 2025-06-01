@@ -1,15 +1,16 @@
-from flask import Flask, flash, redirect, render_template, request, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from config import Config
 from datetime import datetime
 
 class TiketKonserApp:
     def __init__(self):
         self.app = Flask(__name__)
-        self.app.secret_key = "!@#tiketkonser123"
+        self.app.secret_key = "konser_secret_123"
         self.con = Config()
         self.routes()
 
     def routes(self):
+        # Halaman Login & Register
         @self.app.route('/', methods=['GET', 'POST'])
         def home():
             if request.method == 'POST':
@@ -18,6 +19,7 @@ class TiketKonserApp:
                 password = request.form.get('password')
 
                 cur = self.con.mysql.cursor()
+
                 if action == 'login':
                     cur.execute("SELECT * FROM user WHERE user = %s AND password = %s", (username, password))
                     user = cur.fetchone()
@@ -27,7 +29,7 @@ class TiketKonserApp:
                         flash('Login berhasil!', 'success')
                         return redirect(url_for('konser_list'))
                     else:
-                        flash('Username atau password salah', 'danger')
+                        flash('Username atau password salah!', 'danger')
                         return redirect(url_for('home'))
 
                 elif action == 'register':
@@ -42,8 +44,10 @@ class TiketKonserApp:
                     return redirect(url_for('home'))
 
                 cur.close()
+
             return render_template('home.html')
 
+        # Daftar konser
         @self.app.route('/konser')
         def konser_list():
             if 'user_id' not in session:
@@ -56,6 +60,7 @@ class TiketKonserApp:
             cur.close()
             return render_template('lokasi.html', konser=konser)
 
+        # Halaman konser per lokasi (lokasi1.html, lokasi2.html, dst.)
         @self.app.route('/konser/<int:konser_id>')
         def konser_detail(konser_id):
             if 'user_id' not in session:
@@ -68,6 +73,7 @@ class TiketKonserApp:
             cur.close()
             return render_template(f'lokasi{konser_id}.html', sections=sections, konser_id=konser_id)
 
+        # Form isi data diri dan booking
         @self.app.route('/pesan/<int:konser_id>/<int:section_id>', methods=['GET', 'POST'])
         def booking(konser_id, section_id):
             if 'user_id' not in session:
@@ -120,5 +126,5 @@ class TiketKonserApp:
         self.app.run(debug=True)
 
 if __name__ == '__main__':
-    konser = TiketKonserApp()
-    konser.run()
+    app = TiketKonserApp()
+    app.run()
