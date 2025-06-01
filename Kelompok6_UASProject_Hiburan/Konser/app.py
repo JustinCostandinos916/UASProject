@@ -94,27 +94,62 @@ class TiketKonserApp:
                 email = request.form['email']
                 tanggal = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-                cur = self.con.mysql.cursor()
+                cur = self.con.mysql.cursor(dictionary=True)
                 cur.execute("SELECT quota, sold FROM section WHERE id = %s", (section_id,))
                 section = cur.fetchone()
 
-                if section['sold'] >= section['quota']:
+                festival = int(request.form.get('festival', 0))
+                cat2 = int(request.form.get('cat2', 0))
+                cat3 = int(request.form.get('cat3', 0))
+                cat4 = int(request.form.get('cat4', 0))
+                total_tiket = festival + cat2 + cat3 + cat4
+
+                if section['sold'] + total_tiket >= section['quota']:
                     flash('Section sudah penuh!', 'danger')
                     return redirect(url_for('konser_detail', konser_id=konser_id))
+                
+                for _ in range(total_tiket):
+                    cur.execute("""
+                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (session['user_id'], konser_id, section_id, nama, hp, email, tanggal))
 
-                cur.execute("""
-                    INSERT INTO bookiong (userid, idkonser, idsection, nama, hp, email, tanggalbooking)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """, (session['user_id'], konser_id, section_id, nama, hp, email, tanggal))
-
-                cur.execute("UPDATE section SET sold = sold + 1 WHERE id = %s", (section_id,))
+                cur.execute("UPDATE section SET sold = sold + %s WHERE id = %s", (total_tiket, section_id,))
                 self.con.mysql.commit()
                 cur.close()
+
+                harga_festival = 3220000
+                harga_cat2 = 2702500
+                harga_cat3 = 2242500
+                harga_cat4 = 1552500
+
+                session['tiket_data'] = {
+                        'festival': {'jumlah': festival, 'harga': harga_festival},
+                        'cat2': {'jumlah': cat2, 'harga': harga_cat2},
+                        'cat3': {'jumlah': cat3, 'harga': harga_cat3},
+                        'cat4': {'jumlah': cat4, 'harga': harga_cat4}
+                    }
 
                 flash("See you on the concert!", "success")
                 return redirect(url_for('home'))
 
             return render_template('datadiri.html', konser_id=konser_id, section_id=section_id)
+        
+        @self.app.route('/purchase-report')
+        def pdf():
+            tiket_data = session.get('tiket_data', {})
+
+            total_harga = 0
+            jumlah_tiket = 0
+            for info in tiket_data.values():
+                jumlah_tiket += info['jumlah']
+                total_harga += info['jumlah'] * info['harga']
+                
+            rendered = render_template('purchasereport.html', data=tiket_data, total_harga=total_harga, jumlah_tiket=jumlah_tiket)
+            configpdf = pdfkit.configuration(wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+            pdfkit.from_string(rendered, 'uasproject/static/pdf/report.pdf',configuration= configpdf)
+            flash('Success Download Invoice', 'success')
+            return redirect(url_for('home'))
 
         @self.app.route('/logout')
         def logout():
@@ -129,18 +164,6 @@ class TiketKonserApp:
         @self.app.route('/contact')
         def contact():
             return render_template('contactus.html')
-        
-        @self.app.route('/invoice')
-        def pdf():
-            cur         = self.con.mysql.cursor()
-            cur.execute('SELECT * FROM booking')
-            data        = cur.fetchall()
-            cur.close()
-            rendered = render_template('Invoice.html', data=data)
-            configpdf = pdfkit.configuration(wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-            pdfkit.from_string(rendered, 'uasproject/static/pdf/report.pdf',configuration= configpdf)
-            flash('Success Download Invoice', 'success')
-            return redirect(url_for('home'))
 
     def run(self):
         self.app.run(debug=True)

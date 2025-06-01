@@ -1,0 +1,27 @@
+<h2>Invoice Tiket</h2>
+<table border="1">
+  <tr>
+    <th>Jenis Tiket</th>
+    <th>Jumlah</th>
+    <th>Harga per Tiket</th>
+    <th>Total</th>
+  </tr>
+  {% for jenis, info in data.items() %}
+    {% if info.jumlah > 0 %}
+    <tr>
+      <td>{{ jenis|capitalize }}</td>
+      <td>{{ info.jumlah }}</td>
+      <td>Rp {{ "{:,}".format(info.harga) }}</td>
+      <td>Rp {{ "{:,}".format(info.jumlah * info.harga) }}</td>
+    </tr>
+    {% endif %}
+  {% endfor %}
+  <tr>
+    <td colspan="3"><strong>Total Tiket</strong></td>
+    <td><strong>{{ jumlah_tiket }}</strong></td>
+  </tr>
+  <tr>
+    <td colspan="3"><strong>Total Harga</strong></td>
+    <td><strong>Rp {{ "{:,}".format(total_harga) }}</strong></td>
+  </tr>
+</table>
