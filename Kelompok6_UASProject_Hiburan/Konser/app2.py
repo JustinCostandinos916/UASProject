@@ -134,7 +134,6 @@ class TiketKonserApp:
                 harga_cat3 = 2242500
                 harga_cat4 = 1552500
 
-                # Silakan ganti query berikut sesuai kebutuhan
                 if festival > 0:
                     cur.execute(
                         "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
@@ -160,7 +159,6 @@ class TiketKonserApp:
                 self.con.mysql.commit()
                 cur.close()
 
-                # Simpan data ke session
                 session['tiket_data'] = {
                     'festival': {'jumlah': festival, 'harga': harga_festival},
                     'cat2': {'jumlah': cat2, 'harga': harga_cat2},
