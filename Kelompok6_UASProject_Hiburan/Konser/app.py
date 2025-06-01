@@ -92,7 +92,7 @@ class TiketKonserApp:
                     return redirect(url_for('konser_detail', konser_id=konser_id))
 
                 cur.execute("""
-                    INSERT INTO bookiong (userid, idkonser, idsection, nama, hp, email, tanggalbooking)
+                    INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, (session['user_id'], konser_id, section_id, nama, hp, email, tanggal))
 
@@ -104,6 +104,21 @@ class TiketKonserApp:
                 return redirect(url_for('home'))
 
             return render_template('datadiri.html', konser_id=konser_id, section_id=section_id)
+        
+        @self.app.route('/purchase-report')
+        def pdf():
+            cur         = self.con.mysql.cursor()
+            cur.execute('SELECT * FROM booking')
+            data        = cur.fetchall()
+            cur.close()
+            total_harga = 0
+            for item in data:
+                total_harga += item['harga']
+            rendered = render_template('purchasereport.html', data=data, total_harga=total_harga)
+            configpdf = pdfkit.configuration(wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+            pdfkit.from_string(rendered, 'uasproject/static/pdf/report.pdf',configuration= configpdf)
+            flash('Success Download Invoice', 'success')
+            return redirect(url_for('home'))
 
         @self.app.route('/logout')
         def logout():
@@ -119,17 +134,7 @@ class TiketKonserApp:
         def contact():
             return render_template('contactus.html')
         
-        @self.app.route('/invoice')
-        def pdf():
-            cur         = self.con.mysql.cursor()
-            cur.execute('SELECT * FROM booking')
-            data        = cur.fetchall()
-            cur.close()
-            rendered = render_template('Invoice.html', data=data)
-            configpdf = pdfkit.configuration(wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-            pdfkit.from_string(rendered, 'uasproject/static/pdf/report.pdf',configuration= configpdf)
-            flash('Success Download Invoice', 'success')
-            return redirect(url_for('home'))
+        
 
     def run(self):
         self.app.run(debug=True)
