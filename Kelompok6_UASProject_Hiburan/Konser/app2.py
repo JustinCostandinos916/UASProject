@@ -5,6 +5,7 @@ import hashlib
 import os, pdfkit
 
 user = None
+
 class TiketKonserApp:    
     def __init__(self):
         self.app = Flask(__name__)
@@ -19,14 +20,6 @@ class TiketKonserApp:
 
         @self.app.route('/login/')
         def login():
-<<<<<<< HEAD:Kelompok6_UASProject_Hiburan/Konser/app.py
-            return render_template('loginregister.html')
-
-        @self.app.route('/register/')
-        def register():
-            return render_template('loginregister.html')
-
-=======
             return render_template('login.html')
         
         @self.app.route('/login/process', methods=['POST'])
@@ -53,7 +46,6 @@ class TiketKonserApp:
         def register():
             return render_template('register.html')
         
->>>>>>> a95f7f860a49c3410978dc05ffea4d65d50ac8e6:Kelompok6_UASProject_Hiburan/Konser/app2.py
         @self.app.route('/register/process', methods=['POST'])
         def registerprocess():
             if request.method == 'POST':
@@ -62,44 +54,12 @@ class TiketKonserApp:
                 confirmpw = request.form["confirmpw"]
                 phone = request.form["phone"]
                 cur = self.con.mysql.cursor()
-<<<<<<< HEAD:Kelompok6_UASProject_Hiburan/Konser/app.py
-                try:
-                    cur.execute(
-                        'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), %s, %s)',
-                        (username, password, confirmpw, phone)
-                    )
-                    self.con.mysql.commit()
-                    flash('Login berhasil!', 'success')
-                    cur.close()
-                    return redirect(url_for('home'))
-                except Exception:
-                    flash('Username atau password salah!', 'danger')
-                    cur.close()
-                    return redirect(url_for('register'))
-
-        @self.app.route('/Login/process', methods=['POST'])
-        def loginprocess():
-            if request.method == 'POST':
-                username = request.form.get('username')
-                password = request.form.get('password')
-                cur = self.con.mysql.cursor()
-                try:
-                    cur.execute(
-                        "SELECT * FROM user WHERE user = %s AND password = %s",
-                        (username, password)
-                    )
-                    flash('Login berhasil!', 'success')
-                    cur.close()
-                    return redirect(url_for('home'))
-                except Exception:
-                    flash('Username atau password salah!', 'danger')
-                    cur.close()
-                    return redirect(url_for('login'))
-
-=======
                 if password == confirmpw:
                     try:
-                        cur.execute('INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)', (username, password, confirmpw, phone))
+                        cur.execute(
+                            'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)',
+                            (username, password, confirmpw, phone)
+                        )
                         self.con.mysql.commit()
                         cur.close()
                         return redirect(url_for('login'))
@@ -112,7 +72,6 @@ class TiketKonserApp:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
             
->>>>>>> a95f7f860a49c3410978dc05ffea4d65d50ac8e6:Kelompok6_UASProject_Hiburan/Konser/app2.py
         @self.app.route('/konser')
         def konser_list():
             if 'user_id' not in session:
@@ -148,6 +107,7 @@ class TiketKonserApp:
                 hp = request.form['hp']
                 email = request.form['email']
                 tanggal = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                action = request.form.get('action')
 
                 cur = self.con.mysql.cursor(dictionary=True)
                 cur.execute("SELECT quota, sold FROM section WHERE id = %s", (section_id,))
@@ -159,7 +119,12 @@ class TiketKonserApp:
                 cat4 = int(request.form.get('cat4', 0))
                 total_tiket = festival + cat2 + cat3 + cat4
 
-                if section['sold'] + total_tiket >= section['quota']:
+                if total_tiket == 0:
+                    flash('Jumlah tiket tidak boleh kurang dari 1!', 'danger')
+                    cur.close()
+                    return redirect(url_for('konser_detail', konser_id=konser_id))
+
+                if section['sold'] + total_tiket > section['quota']:
                     flash('Section sudah penuh!', 'danger')
                     cur.close()
                     return redirect(url_for('konser_detail', konser_id=konser_id))
@@ -169,52 +134,42 @@ class TiketKonserApp:
                 harga_cat3 = 2242500
                 harga_cat4 = 1552500
 
+                # Silakan ganti query berikut sesuai kebutuhan
                 if festival > 0:
                     cur.execute(
-                        """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        """,
+                        "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, festival, harga_festival)
                     )
                 if cat2 > 0:
                     cur.execute(
-                        """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        """,
+                        "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat2, harga_cat2)
                     )
                 if cat3 > 0:
                     cur.execute(
-                        """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        """,
+                        "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat3, harga_cat3)
                     )
                 if cat4 > 0:
                     cur.execute(
-                        """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        """,
+                        "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat4, harga_cat4)
                     )
 
-                cur.execute(
-                    "UPDATE section SET sold = sold + %s WHERE id = %s",
-                    (total_tiket, section_id)
-                )
+                cur.execute("UPDATE section SET sold = sold + %s WHERE id = %s", (total_tiket, section_id))
                 self.con.mysql.commit()
                 cur.close()
 
+                # Simpan data ke session
                 session['tiket_data'] = {
                     'festival': {'jumlah': festival, 'harga': harga_festival},
                     'cat2': {'jumlah': cat2, 'harga': harga_cat2},
                     'cat3': {'jumlah': cat3, 'harga': harga_cat3},
                     'cat4': {'jumlah': cat4, 'harga': harga_cat4}
                 }
+
+                if action == 'Invoice':
+                    return redirect(url_for('pdf'))
 
                 flash("See you on the concert!", "success")
                 return redirect(url_for('home'))
@@ -234,7 +189,9 @@ class TiketKonserApp:
                 jumlah_tiket=jumlah_tiket
             )
             configpdf = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-            pdfkit.from_string(rendered, 'uasproject/static/pdf/report.pdf', configuration=configpdf)
+            filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            filepath = f"uasproject/static/pdf/{filename}"
+            pdfkit.from_string(rendered, filepath, configuration=configpdf)
             flash('Success Download Invoice', 'success')
             return redirect(url_for('home'))
 
