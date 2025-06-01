@@ -137,14 +137,15 @@ class TiketKonserApp:
         
         @self.app.route('/purchase-report')
         def pdf():
-            cur         = self.con.mysql.cursor()
-            cur.execute('SELECT * FROM booking')
-            data        = cur.fetchall()
-            cur.close()
+            tiket_data = session.get('tiket_data', {})
+
             total_harga = 0
-            for item in data:
-                total_harga += item['harga']
-            rendered = render_template('purchasereport.html', data=data, total_harga=total_harga)
+            jumlah_tiket = 0
+            for info in tiket_data.values():
+                jumlah_tiket += info['jumlah']
+                total_harga += info['jumlah'] * info['harga']
+                
+            rendered = render_template('purchasereport.html', data=tiket_data, total_harga=total_harga, jumlah_tiket=jumlah_tiket)
             configpdf = pdfkit.configuration(wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
             pdfkit.from_string(rendered, 'uasproject/static/pdf/report.pdf',configuration= configpdf)
             flash('Success Download Invoice', 'success')
@@ -163,8 +164,6 @@ class TiketKonserApp:
         @self.app.route('/contact')
         def contact():
             return render_template('contactus.html')
-        
-        
 
     def run(self):
         self.app.run(debug=True)
