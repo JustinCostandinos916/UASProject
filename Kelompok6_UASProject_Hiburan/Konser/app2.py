@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from config import Config
 from datetime import datetime
+import hashlib
 import os, pdfkit
 
-class TiketKonserApp:
+user = None
+class TiketKonserApp:    
     def __init__(self):
         self.app = Flask(__name__)
         self.app.secret_key = "konser_secret_123"
@@ -13,16 +15,45 @@ class TiketKonserApp:
     def routes(self):
         @self.app.route('/Home')
         def home():
-            return render_template("home.html")
+            return render_template("home.html", a=user)
 
-        @self.app.route('/Login/')
+        @self.app.route('/login/')
         def login():
+<<<<<<< HEAD:Kelompok6_UASProject_Hiburan/Konser/app.py
             return render_template('loginregister.html')
 
         @self.app.route('/register/')
         def register():
             return render_template('loginregister.html')
 
+=======
+            return render_template('login.html')
+        
+        @self.app.route('/login/process', methods=['POST'])
+        def loginprocess():
+            if request.method == 'POST':
+                username = request.form.get('username')
+                password = request.form.get('password')
+                cur = self.con.mysql.cursor()
+                pw = hashlib.md5(password.encode()).hexdigest()
+                password = pw[:30]
+                cur.execute("SELECT * FROM user WHERE username = %s AND password = %s", (username, password))
+                row = cur.fetchone()
+                global user
+                if row:
+                    user = row[0]
+                    cur.close()
+                    return redirect(url_for('home'))
+                else:
+                    flash('Username atau password salah!', 'danger')
+                    cur.close()
+                    return redirect(url_for('login'))
+        
+        @self.app.route('/register/')
+        def register():
+            return render_template('register.html')
+        
+>>>>>>> a95f7f860a49c3410978dc05ffea4d65d50ac8e6:Kelompok6_UASProject_Hiburan/Konser/app2.py
         @self.app.route('/register/process', methods=['POST'])
         def registerprocess():
             if request.method == 'POST':
@@ -31,6 +62,7 @@ class TiketKonserApp:
                 confirmpw = request.form["confirmpw"]
                 phone = request.form["phone"]
                 cur = self.con.mysql.cursor()
+<<<<<<< HEAD:Kelompok6_UASProject_Hiburan/Konser/app.py
                 try:
                     cur.execute(
                         'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), %s, %s)',
@@ -64,6 +96,23 @@ class TiketKonserApp:
                     cur.close()
                     return redirect(url_for('login'))
 
+=======
+                if password == confirmpw:
+                    try:
+                        cur.execute('INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)', (username, password, confirmpw, phone))
+                        self.con.mysql.commit()
+                        cur.close()
+                        return redirect(url_for('login'))
+                    except Exception as e:
+                        user = None
+                        flash('Registrasi Gagal!', 'danger')
+                        cur.close()
+                        return redirect(url_for('register'))
+                else:
+                    flash('Konfirmasi password salah!', 'danger')
+                    return redirect(url_for('register'))
+            
+>>>>>>> a95f7f860a49c3410978dc05ffea4d65d50ac8e6:Kelompok6_UASProject_Hiburan/Konser/app2.py
         @self.app.route('/konser')
         def konser_list():
             if 'user_id' not in session:
@@ -123,7 +172,7 @@ class TiketKonserApp:
                 if festival > 0:
                     cur.execute(
                         """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, total_harga)
+                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """,
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, festival, harga_festival)
@@ -131,7 +180,7 @@ class TiketKonserApp:
                 if cat2 > 0:
                     cur.execute(
                         """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, total_harga)
+                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """,
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat2, harga_cat2)
@@ -139,7 +188,7 @@ class TiketKonserApp:
                 if cat3 > 0:
                     cur.execute(
                         """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, total_harga)
+                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """,
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat3, harga_cat3)
@@ -147,7 +196,7 @@ class TiketKonserApp:
                 if cat4 > 0:
                     cur.execute(
                         """
-                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, total_harga)
+                        INSERT INTO booking (userid, idkonser, idsection, nama, hp, email, tanggalbooking, jumlah_tiket, harga)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """,
                         (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat4, harga_cat4)
@@ -204,7 +253,7 @@ class TiketKonserApp:
             return render_template('contactus.html')
 
     def run(self):
-        self.app.run(debug=True)
+        self.app.run(debug=True, port=5000)
 
 if __name__ == '__main__':
     app = TiketKonserApp()

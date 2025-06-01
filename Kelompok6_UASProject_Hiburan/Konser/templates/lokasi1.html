@@ -1,54 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <title>Jakarta</title>
-</head>
-<body>
-  <nav>
-    <a href="lokasi1.html">Judul</a>
-    <ul>
-      <li><a href="home.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contactus.html">Contact Us</a></li>
-    </ul>
-  </nav>
-
-  <h1>2025 Greg Tour [Sway & Slay] In Indonesia - Jakarta</h1>
-  <h2>Event Details</h2>
-  <table>
-    <tr>
-      <td>Date</td>
-      <td>: Tuesday, 10 January 2025</td>
-    </tr>
-    <tr>
-      <td>Time</td>
-      <td>: 14.00 - 20.00</td>
-    </tr>
-    <tr>
-      <td>Location</td>
-      <td>: Stadion Utama Gelora Bung Karno</td>
-    </tr>
-  </table>
-
-  <h3>Venue Details</h3>
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.3416328253597!2d106.80296609999999!3d-6.218600599999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f14d30079f01%3A0x2e74f2341fff266d!2sStadion%20Utama%20Gelora%20Bung%20Karno!5e0!3m2!1sid!2sid!4v1748688550651!5m2!1sid!2sid"
-    width="500"
-    height="200"
-    style="border:0"
-    allowfullscreen=""
-    loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade">
-  </iframe>
-
-  <h2>Ticket Sales</h2>
-  <form method="POST" action="{{ url_for('pesan', konser_id=konser.id, section_id=section.id) }}">
-    <!-- Festival -->
-    <fieldset>
-      <h3>Festival</h3>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <title>Jakarta</title>
+  </head>
+  <body>
+    <nav>
+      <a href="home.html">Judul</a>
       <ul>
         <li><i>Soundcheck</i></li>
         <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>

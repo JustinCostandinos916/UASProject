@@ -6,7 +6,7 @@
 
 body {
   font-family: sans-serif;
-  background: url("bg.jpg") no-repeat center center/cover;
+  background: url('bg.jpg') no-repeat center center/cover;
   color: white;
   min-height: 100vh;
   display: flex;
@@ -22,33 +22,7 @@ body {
   }
 }
 
-.pink {
-  color: #ff00ff;
-}
-
-.about-container {
-  text-align: center;
-  padding: 50px 20px;
-  max-width: 800px;
-  margin: auto;
-  flex: 1;
-  animation: fadeIn 2s ease forwards;
-  opacity: 0;
-  -webkit-animation: fadeIn 2s ease forwards;
-}
-
-.about-container ul {
-  list-style-position: inside;
-  padding-left: 0;
-  margin: 20px auto;
-  text-align: center;
-  display: inline-block;
-}
-
-.about-container li {
-  margin-bottom: 10px;
-}
-
+/* Header */
 header {
   display: flex;
   justify-content: space-between;
@@ -57,22 +31,26 @@ header {
   border-bottom: 1px solid black;
 }
 
+h1 {
+  font-size: 32px;
+}
+
+.pink {
+  color: #ff00ff;
+}
+
 .login-btn {
   color: white;
   text-decoration: none;
   font-size: 20px;
 }
 
-.login-btn:hover {
-  animation: fadeIn 1s ease forwards;
-  opacity: 0.5;
-  -webkit-animation: fadeIn 1s ease forwards;
-}
-
+/* Footer */
 footer {
   background-color: rgba(0, 0, 50, 0.8);
   padding: 10px;
   position: relative;
+  margin-top: auto;
 }
 
 .terms {
@@ -97,4 +75,49 @@ footer nav a {
 
 footer nav a:hover {
   text-decoration: underline;
+}
+
+.loginbox {
+  background-color: rgba(0, 0, 0, 0.5); /* 10% opacity hitam */
+  padding: 30px;
+  max-width: 300px;
+  margin: 50px auto;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+}
+
+.loginbox input[type="text"],
+.loginbox input[type="password"],
+.loginbox input[type="submit"],
+.loginbox input[type="reset"] {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.loginbox input[type="submit"],
+.loginbox input[type="reset"] {
+  background-color: #ff00ff;
+  color: white;
+  cursor: pointer;
+}
+
+.loginbox input[type="submit"]:hover,
+.loginbox input[type="reset"]:hover {
+  background-color: #cc00cc;
+}
+
+#dont {
+  font-size: 14px;
+  margin-top: 15px;
+}
+
+#regist {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: bold;
 }
