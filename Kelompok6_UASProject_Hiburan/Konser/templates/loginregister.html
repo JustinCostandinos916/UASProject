@@ -4,13 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='home.css')}}" />
+    <style>
+      .forms {
+        display: None;
+      }
+      .forms.active {
+        display: block;
+      }
+    </style>
   </head>
   <body>
+    <nav>
+      <a href="home.html">Judul</a>
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+      </ul>
+    </nav>
     {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
     messages %}
     <p class="flash-{{ category }}">{{ message }}</p>
     {% endfor %} {% endif %} {% endwith %}
-    <!-- <div>
+
+    <div class="forms {% if form == 'login' %}active{% endif %}">
       <form style="margin-top: -50px" method="post" action="process">
         <table style="text-align: center" border="2px solid black">
           <tr>
@@ -27,12 +45,12 @@
           <br /><br />
           <tr>
             <td><p>Don't have an account?</p></td>
-            <td><a>Register</a></td>
+            <td><a href="{{ url_for('register') }}">Register</a></td>
           </tr>
         </table>
       </form>
     </div>
-    <div> -->
+    <div class="forms {% if form == 'register' %}active{% endif %}">
       <form style="margin-top: -80px" action="process" method="post">
         <table style="text-align: center" border="2px solid black">
           <tr>
@@ -57,15 +75,10 @@
           <br /><br />
           <tr>
             <td><p>Already have an account?</p></td>
-            <td><a href="">Login</a></td>
+            <td><a href="{{ url_for('login') }}">Login</a></td>
           </tr>
         </table>
       </form>
-    </div>
-    <div class="Bawah">
-      <a href="home.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="contactus.html">Contact Us</a>
     </div>
   </body>
 </html>
