@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
+    messages %}
+    <p class="flash-{{ category }}">{{ message }}</p>
+    {% endfor %} {% endif %} {% endwith %}
+    <!-- <div>
+      <form style="margin-top: -50px" method="post" action="process">
+        <table style="text-align: center" border="2px solid black">
+          <tr>
+            <td colspan="2"><input type="username" name="username" placeholder="Username" required /></td>
+          </tr>
+          <br />
+          <tr>
+            <td colspan="2"><input type="password" name="password" placeholder="Password" required /></td>
+          </tr>
+          <br /><br />
+          <tr>
+            <td colspan="2"><input type="submit" value="Login" /></td>
+          </tr>
+          <br /><br />
+          <tr>
+            <td><p>Don't have an account?</p></td>
+            <td><a>Register</a></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div> -->
+      <form style="margin-top: -80px" action="process" method="post">
+        <table style="text-align: center" border="2px solid black">
+          <tr>
+            <td colspan="2"><input type="username" name="username" placeholder="Username" required /></td>
+          </tr>
+          <br />
+          <tr>
+            <td colspan="2"><input type="password" name="password" placeholder="Password" required /></td>
+          </tr>
+          <br />
+          <tr>
+            <td colspan="2"><input type="password" name="confirmpw" placeholder="Password" required /></td>
+          </tr>
+          <br />
+          <tr>
+            <td colspan="2"><input type="number" name="phone" placeholder="Phone" required /></td>
+          </tr>
+          <br />
+          <tr>
+            <td colspan="2"><input type="submit" value="Register" /></td>
+          </tr>
+          <br /><br />
+          <tr>
+            <td><p>Already have an account?</p></td>
+            <td><a href="">Login</a></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div class="Bawah">
+      <a href="home.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contactus.html">Contact Us</a>
+    </div>
+  </body>
+</html>
