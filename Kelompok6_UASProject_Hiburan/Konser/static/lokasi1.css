@@ -72,6 +72,86 @@ footer nav a {
   font-size: 20px;
 }
 
+footer nav a:hover {* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background: url('bg.jpg') no-repeat center center/cover;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn ease forwards;
+  -webkit-animation: fadeIn 2s ease forwards;
+  opacity: 0;
+}
+
+.content {
+    flex: 1;
+}
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  border-bottom: 1px solid black;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.pink {
+  color: #ff00ff;
+}
+
+.login-btn {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+
+
+
+
+footer {
+  background-color: rgba(0,0,50,0.8);
+  padding: 10px;
+  position: relative;
+}
+
+.terms {
+  font-size: 12px;
+  margin-bottom: 10px;
+  padding: 0 15px;
+  text-align: justify;
+}
+
+footer nav {
+  display: flex;
+  justify-content: space-around;
+  background: #00247d;
+  padding: 10px 0;
+}
+
+footer nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+
 footer nav a:hover {
+  text-decoration: underline;
+}
   text-decoration: underline;
 }

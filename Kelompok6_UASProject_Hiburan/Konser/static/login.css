@@ -6,7 +6,7 @@
 
 body {
   font-family: sans-serif;
-  background: url('bg.jpg') no-repeat center center/cover;
+  background: url("bg.jpg") no-repeat center center/cover;
   color: white;
   min-height: 100vh;
   display: flex;
@@ -119,5 +119,12 @@ footer nav a:hover {
   color: #ffffff;
   text-decoration: none;
   cursor: pointer;
+  font-weight: bold;
+}
+
+.alertpassword {
+  color: red;
+  margin: auto;
+  margin-top: 20px;
   font-weight: bold;
 }
