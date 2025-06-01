@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from config import Config
 from datetime import datetime
 import hashlib
-import os, pdfkit
+import os, pdfkit, pymysql
 
 user = None
 
