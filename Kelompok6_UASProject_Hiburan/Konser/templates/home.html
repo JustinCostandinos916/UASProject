@@ -3,47 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{url_for('static',filename='home.css')}}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
     <title>Home</title>
   </head>
-<header>
-    <h1>Greg's<span class="pink">Tour</span></h1>
-    <a href="{{url_for('login')}}" class="login-btn">{{a}}</a>
-</header>
+  <body>
+    <header>
+      <h1>Greg's<span class="pink">Tour</span></h1>
+      <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+    </header>
 
-<main>
-    <div class="card-container">
-<div class="tour-card">
-  <a href="lokasi1.html">
-    <img src="jakarta.jpg" alt="Jakarta" />
-  </a>
-</div>
+    <main>
+      <div class="card-container">
+        <div class="tour-card">
+          <a href="{{ url_for('konser_detail', konser_id=1) }}">
+            <img src="{{ url_for('static', filename='img/jakarta.jpg') }}" alt="Jakarta" />
+          </a>
+        </div>
 
-<div class="tour-card">
-  <a href="lokasi2.html">
-    <img src="bandung.jpg" alt="Bandung" />
-  </a>
-</div>
+        <div class="tour-card">
+          <a href="{{ url_for('konser_detail', konser_id=2) }}">
+            <img src="{{ url_for('static', filename='img/bandung.jpg') }}" alt="Bandung" />
+          </a>
+        </div>
 
-<div class="tour-card">
-  <a href="lokasi3.html">
-    <img src="surabaya.jpg" alt="Surabaya" />
-  </a>
-</div>
+        <div class="tour-card">
+          <a href="{{ url_for('konser_detail', konser_id=3) }}">
+            <img src="{{ url_for('static', filename='img/surabaya.jpg') }}" alt="Surabaya" />
+          </a>
+        </div>
+      </div>
+      <p class="desc">This concert will take place in several places!</p>
+    </main>
 
-    </div>
-    <p class="desc">This concert will take place in several places!</p>
-</main>
-
-<footer>
-  <p class="terms">
-    By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
-  </p>
-  <nav>
-    <a href="home.html">Home</a>
-    <a href="about.html">About</a>
-      <a href="contactus.html" id="contact">Contact us</a>
-  </nav>
-</footer>
+    <footer>
+      <p class="terms">
+        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+      </p>
+      <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('contact') }}">Contact us</a> <!-- ✅ Perbaikan -->
+      </nav>
+    </footer>
   </body>
 </html>
