@@ -5,7 +5,8 @@ import hashlib
 import os, pdfkit, pymysql
 
 user = None
-
+if user is None:
+    user = 'Login'
 class TiketKonserApp:    
     def __init__(self):
         self.app = Flask(__name__)
@@ -72,18 +73,6 @@ class TiketKonserApp:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
             
-        @self.app.route('/konser')
-        def konser_list():
-            if 'user_id' not in session:
-                flash('Silakan login terlebih dahulu.', 'warning')
-                return redirect(url_for('home'))
-
-            cur = self.con.mysql.cursor()
-            cur.execute("SELECT * FROM konser")
-            konser = cur.fetchall()
-            cur.close()
-            return render_template('lokasi.html', konser=konser)
-
         @self.app.route('/konser/<int:konser_id>')
         def konser_detail(konser_id):
             if 'user_id' not in session:
@@ -201,7 +190,7 @@ class TiketKonserApp:
 
         @self.app.route('/about')
         def about():
-            return render_template('about.html')
+            return render_template('about.html', a=user)
 
         @self.app.route('/contact')
         def contact():

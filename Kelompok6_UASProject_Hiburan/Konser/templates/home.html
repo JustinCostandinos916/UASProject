@@ -8,27 +8,29 @@
   </head>
   <body>
     <header>
-      <h1>Greg's<span class="pink">Tour</span></h1>
-      <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+      <a class="Gregtour" href="{{url_for('home')}}"
+        ><h1>Greg's<span class="pink">Tour</span></h1></a
+      >
+      <a href="{{ url_for('login') }}" class="login-btn">{{a}}</a>
     </header>
 
     <main>
       <div class="card-container">
         <div class="tour-card">
           <a href="{{ url_for('konser_detail', konser_id=1) }}">
-            <img src="{{ url_for('static', filename='img/jakarta.jpg') }}" alt="Jakarta" />
+            <img src="{{ url_for('static', filename='jakarta.jpg') }}" alt="Jakarta" />
           </a>
         </div>
 
         <div class="tour-card">
           <a href="{{ url_for('konser_detail', konser_id=2) }}">
-            <img src="{{ url_for('static', filename='img/bandung.jpg') }}" alt="Bandung" />
+            <img src="{{ url_for('static', filename='bandung.jpg') }}" alt="Bandung" />
           </a>
         </div>
 
         <div class="tour-card">
           <a href="{{ url_for('konser_detail', konser_id=3) }}">
-            <img src="{{ url_for('static', filename='img/surabaya.jpg') }}" alt="Surabaya" />
+            <img src="{{ url_for('static', filename='surabaya.jpg') }}" alt="Surabaya" />
           </a>
         </div>
       </div>
@@ -37,12 +39,14 @@
 
     <footer>
       <p class="terms">
-        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
+        applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
       </p>
       <nav>
         <a href="{{ url_for('home') }}">Home</a>
         <a href="{{ url_for('about') }}">About</a>
-        <a href="{{ url_for('contact') }}">Contact us</a> <!-- ✅ Perbaikan -->
+        <a href="{{ url_for('contact') }}">Contact us</a>
+        <!-- ✅ Perbaikan -->
       </nav>
     </footer>
   </body>
