@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from config import Config
 from datetime import datetime
+import os, pdfkit
 
 class TiketKonserApp:
     def __init__(self):
@@ -140,6 +141,18 @@ class TiketKonserApp:
         @self.app.route('/contact')
         def contact():
             return render_template('contactus.html')
+        
+        @self.app.route('/invoice')
+        def pdf():
+            cur         = self.con.mysql.cursor()
+            cur.execute('SELECT * FROM booking')
+            data        = cur.fetchall()
+            cur.close()
+            rendered = render_template('Invoice.html', data=data)
+            configpdf = pdfkit.configuration(wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+            pdfkit.from_string(rendered, 'uasproject/static/pdf/report.pdf',configuration= configpdf)
+            flash('Success Download Invoice', 'success')
+            return redirect(url_for('home'))
 
     def run(self):
         self.app.run(debug=True)

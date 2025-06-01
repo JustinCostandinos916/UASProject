@@ -45,7 +45,7 @@
     </iframe>
 
     <h2>Ticket Sales</h2>
-    <form method="POST" action="/datadiri">
+    <form method="POST" action="{{ url_for('pesan', konser_id=konser.id, section_id=section.id) }}">
       <!-- Festival -->
       <fieldset>
         <h3>Festival</h3>
