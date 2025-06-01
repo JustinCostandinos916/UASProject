@@ -6,7 +6,7 @@
 
 body {
   font-family: sans-serif;
-  background: url('bg.jpg') no-repeat center center/cover;
+  background: url("bg.jpg") no-repeat center center/cover;
   color: white;
   min-height: 100vh;
   display: flex;
@@ -17,9 +17,9 @@ body {
 }
 
 @keyframes fadeIn {
-    to {
-        opacity: 1;
-    }
+  to {
+    opacity: 1;
+  }
 }
 header {
   display: flex;
@@ -38,7 +38,7 @@ h1 {
 }
 
 footer {
-  background-color: rgba(0,0,50,0.8);
+  background-color: rgba(0, 0, 50, 0.8);
   padding: 10px;
   position: relative;
   margin-top: auto;
@@ -65,7 +65,7 @@ footer nav a {
 }
 
 footer nav a:hover {
-  text-decoration: underline;
+  text-decoration: underline;
 }
 
 .contact-wrapper {
@@ -110,7 +110,7 @@ footer nav a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   padding: 30px;
   border-radius: 10px;
   max-width: 400px;
@@ -145,11 +145,20 @@ footer nav a:hover {
 }
 
 #log {
-    color: white;
+  color: white;
 }
 
-
+.alertpassword {
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: -25px;
+  color: red;
+  text-align: center;
+  font-weight: bold;
+  right: 37%;
+  top: 15%;
+}
 .button-group {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
