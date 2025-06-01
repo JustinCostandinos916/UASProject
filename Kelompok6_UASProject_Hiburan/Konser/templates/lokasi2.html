@@ -156,6 +156,25 @@
       </tr>
     </table>
 
-    <script src="{{ url_for('static', filename='jumlah.js') }}"></script>
+    <script>
+      function updateSummary() {
+        const festivalCount = parseInt(document.getElementById("festival").value);
+        const cat2Count = parseInt(document.getElementById("cat2").value);
+        const cat3Count = parseInt(document.getElementById("cat3").value);
+        const cat4Count = parseInt(document.getElementById("cat4").value);
+
+        const festivalPrice = 3220000;
+        const cat2Price = 2702500;
+        const cat3Price = 2242500;
+        const cat4Price = 1552500;
+
+        const totalTickets = festivalCount + cat2Count + cat3Count + cat4Count;
+        const subtotal =
+          festivalCount * festivalPrice + cat2Count * cat2Price + cat3Count * cat3Price + cat4Count * cat4Price;
+
+        document.getElementById("ticketCount").innerText = totalTickets;
+        document.getElementById("subtotal").innerText = subtotal.toLocaleString();
+      }
+    </script>
   </body>
 </html>
