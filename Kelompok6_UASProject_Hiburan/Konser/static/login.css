@@ -1,0 +1,146 @@
+/* Reset & Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background: url('bg.jpg') no-repeat center center/cover;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn ease forwards;
+  -webkit-animation: fadeIn 2s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  border-bottom: 1px solid black;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.pink {
+  color: #ff00ff;
+}
+
+.login-btn {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+/* Footer */
+footer {
+  background-color: rgba(0, 0, 50, 0.8);
+  padding: 10px;
+  position: relative;
+  margin-top: auto;
+}
+
+.terms {
+  font-size: 12px;
+  margin-bottom: 10px;
+  padding: 0 15px;
+  text-align: justify;
+}
+
+footer nav {
+  display: flex;
+  justify-content: space-around;
+  background: #00247d;
+  padding: 10px 0;
+}
+
+footer nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+footer nav a:hover {
+  text-decoration: underline;
+}
+
+/* Contact Form */
+.contact-form {
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.contact-form input[type="email"],
+.contact-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #000;
+}
+
+.contact-form textarea {
+  resize: vertical;
+}
+
+.contact-form button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #000000;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.contact-form button:hover {
+  background-color: #4a004a;
+}
+
+/* Optional: spacing for content */
+h2, p, ul {
+  margin: 20px 30px;
+}
+
+ul {
+  list-style: disc;
+  padding-left: 50px;
+}
+
+ul li {
+  margin-bottom: 10px;
+}
+
+a {
+  color: #ff00ff;
+}
+
+a:hover {
+  text-decoration: underline;
+}

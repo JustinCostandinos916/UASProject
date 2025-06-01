@@ -1,0 +1,155 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background: url('bg.jpg') no-repeat center center/cover;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn ease forwards;
+  -webkit-animation: fadeIn 2s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  border-bottom: 1px solid black;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.pink {
+  color: #ff00ff;
+}
+
+footer {
+  background-color: rgba(0,0,50,0.8);
+  padding: 10px;
+  position: relative;
+  margin-top: auto;
+}
+
+.terms {
+  font-size: 12px;
+  margin-bottom: 10px;
+  padding: 0 15px;
+  text-align: justify;
+}
+
+footer nav {
+  display: flex;
+  justify-content: space-around;
+  background: #00247d;
+  padding: 10px 0;
+}
+
+footer nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+footer nav a:hover {
+  text-decoration: underline;
+}
+
+.contact-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 5px;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.tooltip img {
+  width: 60px;
+  height: 40px;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+}
+
+.contact-wrapper:hover .tooltip {
+  display: block;
+}
+
+.regisbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.8);
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 50px auto;
+  color: white;
+}
+
+.regisbox input[type="text"],
+.regisbox input[type="password"],
+.regisbox input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.regisbox input[type="submit"],
+.regisbox input[type="reset"] {
+  padding: 10px 20px;
+  margin: 10px 5px 0 0;
+  border: none;
+  border-radius: 5px;
+  background-color: #000000;
+  color: white;
+  cursor: pointer;
+}
+
+.regisbox input[type="submit"]:hover,
+.regisbox input[type="reset"]:hover {
+  background-color: #4a004a;
+}
+
+#log {
+    color: white;
+}
+
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}

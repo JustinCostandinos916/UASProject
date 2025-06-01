@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{url_for('static',filename='login.css')}}" />
+    <title>Home</title>
+  </head>
+  <body>
+
+<header>
+    <h1>Greg's<span class="pink">Tour</span></h1>
+</header>
+
+<div class="loginbox">
+  <form>
+    <table>
+      <tr>
+        <td>
+          <input type="text" name="username" placeholder="username"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="password" name="password" placeholder="Password"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="submit" name="login" value="Login">
+          <input type="reset" name="clear" value="Cancel">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p id="dont">Don't have an account? <a id="regist" href="register.html">Register</a></p>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+
+<footer>
+  <p class="terms">
+    By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+  </p>
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="about.html">About</a>
+
+    <div class="contact-wrapper">
+      <a href="#" id="contact">Contact us</a>
+      <div class="tooltip">
+        <a href="https://wa.me/6281234567890" target="_blank">
+          <img src="whatsapp-logo.png" alt="WhatsApp" width="40">
+        </a>
+        <div class="tooltip-arrow"></div>
+      </div>
+    </div>
+    
+  </nav>
+</footer>
+    </body>
+</html>
