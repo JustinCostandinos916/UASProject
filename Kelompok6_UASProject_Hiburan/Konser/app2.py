@@ -72,7 +72,7 @@ class TiketKonserApp:
                 else:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
-            
+        
         @self.app.route('/konser/<int:konser_id>')
         def konser_detail(konser_id):
             if 'user_id' not in session:

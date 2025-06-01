@@ -126,3 +126,17 @@ footer nav a:hover {
   margin-top: 20px;
   font-weight: bold;
 }
+
+.phone {
+  margin-top: 10px;
+  width: 35ch;
+  height: 5.4ch;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: None;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
