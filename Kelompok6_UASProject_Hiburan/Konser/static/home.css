@@ -11,8 +11,16 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  animation: fadeIn ease forwards;
+  -webkit-animation: fadeIn 2s ease forwards;
+  opacity: 0;
 }
 
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
 header {
   display: flex;
   justify-content: space-between;
@@ -48,7 +56,7 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-  margin-bottom: 20px;  
+  margin-bottom: 20px;
 }
 
 .card {
@@ -90,5 +98,9 @@ footer nav a {
 }
 
 footer nav a:hover {
-  text-decoration: underline;
+  text-decoration: underline;
 }
+
+
+
+
