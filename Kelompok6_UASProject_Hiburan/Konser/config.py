@@ -6,6 +6,5 @@ class Config:
             host='localhost',
             user='root',
             password='',
-            database='tiketkonser',
-            cursorclass=pymysql.cursors.DictCursor
+            database='tiketkonser'
         )

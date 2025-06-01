@@ -10,41 +10,64 @@ class TiketKonserApp:
         self.routes()
 
     def routes(self):
-        @self.app.route('/', methods=['GET', 'POST'])
+        @self.app.route('/Home')
         def home():
+            return render_template("home.html")
+
+        @self.app.route('/Login/')
+        def login():
+            return render_template('loginregister.html')
+        
+        @self.app.route('/register/')
+        def register():
+            return render_template('loginregister.html')
+        
+        @self.app.route('/register/process', methods=['POST'])
+        def registerprocess():
             if request.method == 'POST':
-                action = request.form.get('action')
-                username = request.form.get('username')
-                password = request.form.get('password')
-
+                username = request.form['username']
+                password = request.form['password']
+                confirmpw = request.form["confirmpw"]
+                phone = request.form["phone"]
                 cur = self.con.mysql.cursor()
-
-                if action == 'login':
-                    cur.execute("SELECT * FROM user WHERE user = %s AND password = %s", (username, password))
-                    user = cur.fetchone()
-                    if user:
-                        session['user_id'] = user['id']
-                        session['username'] = user['user']
-                        flash('Login berhasil!', 'success')
-                        return redirect(url_for('konser_list'))
-                    else:
-                        flash('Username atau password salah!', 'danger')
-                        return redirect(url_for('home'))
-
-                elif action == 'register':
-                    cur.execute("SELECT * FROM user WHERE user = %s", (username,))
-                    if cur.fetchone():
-                        flash('Username sudah digunakan!', 'danger')
-                        return redirect(url_for('home'))
-
-                    cur.execute("INSERT INTO user (user, password) VALUES (%s, %s)", (username, password))
-                    self.con.mysql.commit()
-                    flash('Registrasi berhasil! Silakan login.', 'success')
-                    return redirect(url_for('home'))
-
+            try:
+                cur.execute('INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), %s, %s)', (username, password, confirmpw, phone))
+                self.con.mysql.commit()
+                flash('Login berhasil!', 'success')
                 cur.close()
+                return redirect(url_for('home'))
+            except Exception as e:
+                flash('Username atau password salah!', 'danger')
+                cur.close()
+                return redirect(url_for('register'))
+            
+            # elif action == 'register':
+            #     cur.execute("SELECT * FROM user WHERE user = %s", (username,))
+            #     if cur.fetchone():
+            #         flash('Username sudah digunakan!', 'danger')
+            #         return redirect(url_for('home'))
 
-            return render_template('home.html')
+            #         cur.execute("INSERT INTO user (user, password) VALUES (%s, %s)", (username, password))
+            #         self.con.mysql.commit()
+            #         flash('Registrasi berhasil! Silakan login.', 'success')
+            #         return redirect(url_for('home'))
+
+            #     cur.close()        
+        @self.app.route('/Login/process', methods=['POST'])
+        # def loginprocess():
+        #     if request.method == 'POST':
+        #         username = request.form.get('username')
+        #         password = request.form.get('password')
+        #         cur = self.con.mysql.cursor()
+        #     try:
+        #         cur.execute("SELECT * FROM user WHERE user = %s AND password = %s", (username, password))
+        #         flash('Login berhasil!', 'success')
+        #         cur.close()
+        #         return redirect(url_for('home'))
+        #     except Exception as e:
+        #         flash('Username atau password salah!', 'danger')
+        #         cur.close()
+        #         return redirect(url_for('login'))
 
         @self.app.route('/konser')
         def konser_list():
