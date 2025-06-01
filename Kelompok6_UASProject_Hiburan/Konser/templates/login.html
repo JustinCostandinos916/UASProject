@@ -7,11 +7,16 @@
     <title>Home</title>
   </head>
   <body>
+    <header>
+      <h1>Greg's<span class="pink">Tour</span></h1>
+    </header>
 
-<header>
-    <h1>Greg's<span class="pink">Tour</span></h1>
-</header>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
+    messages %}
+    <p class="flash-{{ category }} alertpassword">{{ message }}</p>
+    {% endfor %} {% endif %} {% endwith %}
 
+<<<<<<< HEAD
 <div class="loginbox">
   <form>
     <table>
@@ -62,3 +67,55 @@
 </footer>
     </body> 
 </html>
+=======
+    <div class="loginbox">
+      <form action="process" method="post">
+        <table>
+          <tr>
+            <td>
+              <input type="text" name="username" placeholder="username" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="password" name="password" placeholder="Password" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="submit" name="login" value="Login" />
+              <input type="reset" name="clear" value="Cancel" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p id="dont">Don't have an account? <a id="regist" href="{{url_for('register')}}">Register</a></p>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <footer>
+      <p class="terms">
+        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
+        applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+      </p>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="about.html">About</a>
+
+        <div class="contact-wrapper">
+          <a href="#" id="contact">Contact us</a>
+          <div class="tooltip">
+            <a href="https://wa.me/6281234567890" target="_blank">
+              <img src="whatsapp-logo.png" alt="WhatsApp" width="40" />
+            </a>
+            <div class="tooltip-arrow"></div>
+          </div>
+        </div>
+      </nav>
+    </footer>
+  </body>
+</html>
+>>>>>>> 3c7d711cb53c8ca7ac8b9b89fa11021c57e9e8ff
