@@ -10,6 +10,12 @@
     <header>
       <h1>Greg's<span class="pink">Tour</span></h1>
     </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
+    messages %}
+    <p class="flash-{{ category }} alertpassword">{{ message }}</p>
+    {% endfor %} {% endif %} {% endwith %}
+
     <div class="loginbox">
       <form action="process" method="post">
         <table>

@@ -19,14 +19,6 @@ class TiketKonserApp:
 
         @self.app.route('/login/')
         def login():
-<<<<<<< HEAD:Kelompok6_UASProject_Hiburan/Konser/app.py
-            return render_template('loginregister.html')
-
-        @self.app.route('/register/')
-        def register():
-            return render_template('loginregister.html')
-
-=======
             return render_template('login.html')
         
         @self.app.route('/login/process', methods=['POST'])
@@ -53,7 +45,6 @@ class TiketKonserApp:
         def register():
             return render_template('register.html')
         
->>>>>>> a95f7f860a49c3410978dc05ffea4d65d50ac8e6:Kelompok6_UASProject_Hiburan/Konser/app2.py
         @self.app.route('/register/process', methods=['POST'])
         def registerprocess():
             if request.method == 'POST':
@@ -62,41 +53,6 @@ class TiketKonserApp:
                 confirmpw = request.form["confirmpw"]
                 phone = request.form["phone"]
                 cur = self.con.mysql.cursor()
-<<<<<<< HEAD:Kelompok6_UASProject_Hiburan/Konser/app.py
-                try:
-                    cur.execute(
-                        'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), %s, %s)',
-                        (username, password, confirmpw, phone)
-                    )
-                    self.con.mysql.commit()
-                    flash('Login berhasil!', 'success')
-                    cur.close()
-                    return redirect(url_for('home'))
-                except Exception:
-                    flash('Username atau password salah!', 'danger')
-                    cur.close()
-                    return redirect(url_for('register'))
-
-        @self.app.route('/Login/process', methods=['POST'])
-        def loginprocess():
-            if request.method == 'POST':
-                username = request.form.get('username')
-                password = request.form.get('password')
-                cur = self.con.mysql.cursor()
-                try:
-                    cur.execute(
-                        "SELECT * FROM user WHERE user = %s AND password = %s",
-                        (username, password)
-                    )
-                    flash('Login berhasil!', 'success')
-                    cur.close()
-                    return redirect(url_for('home'))
-                except Exception:
-                    flash('Username atau password salah!', 'danger')
-                    cur.close()
-                    return redirect(url_for('login'))
-
-=======
                 if password == confirmpw:
                     try:
                         cur.execute('INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)', (username, password, confirmpw, phone))
@@ -112,7 +68,6 @@ class TiketKonserApp:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
             
->>>>>>> a95f7f860a49c3410978dc05ffea4d65d50ac8e6:Kelompok6_UASProject_Hiburan/Konser/app2.py
         @self.app.route('/konser')
         def konser_list():
             if 'user_id' not in session:
