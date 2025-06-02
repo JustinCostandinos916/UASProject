@@ -5,7 +5,8 @@ import hashlib
 import os, pdfkit, pymysql
 
 user = None
-
+if user is None:
+    user = 'Login'
 class TiketKonserApp:    
     def __init__(self):
         self.app = Flask(__name__)
@@ -55,46 +56,30 @@ class TiketKonserApp:
                 phone = request.form["phone"]
                 cur = self.con.mysql.cursor()
                 if password == confirmpw:
-                    # try:
-                    cur.execute(
-                        'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)',
-                        (username, password, confirmpw, phone)
-                    )
-                    self.con.mysql.commit()
-                    cur.close()
-                    return redirect(url_for('login'))
-                    # except Exception as e:
-                    user = None
-                    flash('Registrasi Gagal!', 'danger')
-                    cur.close()
-                    return redirect(url_for('register'))
+                    try:
+                        cur.execute(
+                            'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)',
+                            (username, password, confirmpw, phone)
+                        )
+                        self.con.mysql.commit()
+                        cur.close()
+                        return redirect(url_for('login'))
+                    except Exception as e:
+                        user = None
+                        flash('Registrasi Gagal!', 'danger')
+                        cur.close()
+                        return redirect(url_for('register'))
                 else:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
-            
-        @self.app.route('/konser')
-        def konser_list():
-            if 'user_id' not in session:
-                flash('Silakan login terlebih dahulu.', 'warning')
-                return redirect(url_for('home'))
-
-            cur = self.con.mysql.cursor()
-            cur.execute("SELECT * FROM konser")
-            konser = cur.fetchall()
-            cur.close()
-            return render_template('lokasi.html', konser=konser)
-
-        @self.app.route('/konser/<int:konser_id>')
+        
+        @self.app.route('/konser<int:konser_id>')
         def konser_detail(konser_id):
-            if 'user_id' not in session:
+            if user == 'Login':
                 flash('Silakan login terlebih dahulu.', 'warning')
-                return redirect(url_for('home'))
-
-            cur = self.con.mysql.cursor()
-            cur.execute("SELECT * FROM section WHERE idkonser = %s", (konser_id,))
-            sections = cur.fetchall()
-            cur.close()
-            return render_template(f'lokasi{konser_id}.html', sections=sections, konser_id=konser_id)
+                return redirect(url_for('login'))
+            else:
+                return render_template(f'lokasi{konser_id}.html')
 
         @self.app.route('/pesan/<int:konser_id>/<int:section_id>', methods=['GET', 'POST'])
         def booking(konser_id, section_id):
@@ -201,7 +186,7 @@ class TiketKonserApp:
 
         @self.app.route('/about')
         def about():
-            return render_template('about.html')
+            return render_template('about.html', a=user)
 
         @self.app.route('/contact')
         def contact():

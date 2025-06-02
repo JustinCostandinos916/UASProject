@@ -7,55 +7,61 @@
     <title>About</title>
   </head>
   <body>
-     <header>
-    <h1>Greg's<span class="pink">Tour</span></h1>
-    <a href="login.html" class="login-btn">Login</a>
-</header>
+    <header>
+      <a class="Gregtour" href="{{url_for('home')}}"
+        ><h1>Greg's<span class="pink">Tour</span></h1></a
+      >
+      <a href="{{url_for('login')}}" class="login-btn">{{a}}</a>
+    </header>
 
-<div class="about-container">
-    <h1>About Greg's Tour</h1>
-    <p>
-      Greg's Tour adalah platform pemesanan tiket konser eksklusif yang hadir untuk para pecinta musik di Indonesia.
-      Kami menyediakan informasi lengkap tentang jadwal konser, lokasi, harga tiket, dan syarat ketentuan yang berlaku.
-      Dengan antarmuka yang simpel dan modern, Greg's Tour bertujuan memberikan pengalaman pemesanan tiket yang cepat, 
-      aman, dan nyaman untuk semua penggemar musik.
-    </p>
+    <div class="about-container">
+      <h1>About Greg's Tour</h1>
+      <p>
+        Greg's Tour adalah platform pemesanan tiket konser eksklusif yang hadir untuk para pecinta musik di Indonesia.
+        Kami menyediakan informasi lengkap tentang jadwal konser, lokasi, harga tiket, dan syarat ketentuan yang
+        berlaku. Dengan antarmuka yang simpel dan modern, Greg's Tour bertujuan memberikan pengalaman pemesanan tiket
+        yang cepat, aman, dan nyaman untuk semua penggemar musik.
+      </p>
 
-    <h1>About the 2025 Greg Tour [Sway & Slay]</h1>
-    <p>
-      The <b>2025 Greg Tour [Sway & Slay]</b> is the most anticipated music tour of the year, bringing the electrifying performances of Greg to fans across Indonesia. This tour is set to captivate audiences in three major cities: <b>Jakarta, Bandung, and Surabaya</b>.
-    </p>
+      <h1>About the 2025 Greg Tour [Sway & Slay]</h1>
+      <p>
+        The <b>2025 Greg Tour [Sway & Slay]</b> is the most anticipated music tour of the year, bringing the
+        electrifying performances of Greg to fans across Indonesia. This tour is set to captivate audiences in three
+        major cities: <b>Jakarta, Bandung, and Surabaya</b>.
+      </p>
 
-    <p>
-      With a bold mix of choreography, vocals, and stunning visuals, the "Sway & Slay" experience is more than a concert — it's a full-on spectacle. Expect unforgettable moments, high-energy hits, and exclusive surprises that can only be experienced live.
-    </p>
+      <p>
+        With a bold mix of choreography, vocals, and stunning visuals, the "Sway & Slay" experience is more than a
+        concert — it's a full-on spectacle. Expect unforgettable moments, high-energy hits, and exclusive surprises that
+        can only be experienced live.
+      </p>
 
-    <h2>Tour Highlights</h2>
-    <ul>
-      <li>🔥 Brand new stage design and lighting effects</li>
-      <li>🎤 Performing top hits and unreleased tracks</li>
-      <li>👕 Exclusive merchandise only available on tour</li>
-      <li>📸 VIP packages with meet & greet opportunities</li>
-    </ul>
+      <h2>Tour Highlights</h2>
+      <ul>
+        <li>🔥 Brand new stage design and lighting effects</li>
+        <li>🎤 Performing top hits and unreleased tracks</li>
+        <li>👕 Exclusive merchandise only available on tour</li>
+        <li>📸 VIP packages with meet & greet opportunities</li>
+      </ul>
 
-    <h2>Tour Dates & Locations</h2>
-    <ul>
-      <li><b>Jakarta</b> - January 10, 2025</li>
-      <li><b>Bandung</b> - January 13, 2025</li>
-      <li><b>Surabaya</b> - January 16, 2025</li>
-    </ul>
-  </div>
+      <h2>Tour Dates & Locations</h2>
+      <ul>
+        <li><b>Jakarta</b> - January 10, 2025</li>
+        <li><b>Bandung</b> - January 13, 2025</li>
+        <li><b>Surabaya</b> - January 16, 2025</li>
+      </ul>
+    </div>
 
-<footer>
-  <p class="terms">
-    By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
-  </p>
-  <nav>
-     <a href="{{ url_for('home') }}">Home</a>
-      <a href="{{ url_for('about') }}">About</a>
-      <a href="{{ url_for('contact') }}">Contact us</a>
-  </nav>
-</footer>
-
+    <footer>
+      <p class="terms">
+        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
+        applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+      </p>
+      <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('contact') }}">Contact us</a>
+      </nav>
+    </footer>
   </body>
 </html>
