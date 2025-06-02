@@ -50,11 +50,11 @@
         applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
       </p>
       <nav>
-        <a href="home.html">Home</a>
-        <a href="about.html">About</a>
+        <a href="{{url_for('home')}}">Home</a>
+        <a href="{{url_for('about')}}">About</a>
 
         <div class="contact-wrapper">
-          <a href="#" id="contact">Contact us</a>
+          <a href="{{url_for('contact')}}" id="contact">Contact us</a>
           <div class="tooltip">
             <a href="https://wa.me/6281234567890" target="_blank">
               <img src="whatsapp-logo.png" alt="WhatsApp" width="40" />
