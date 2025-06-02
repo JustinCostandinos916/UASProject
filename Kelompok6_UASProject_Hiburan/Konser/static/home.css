@@ -274,3 +274,7 @@ footer nav a:hover {
   text-decoration: None;
   color: inherit;
 }
+
+.gambarlink {
+  pointer-events: auto;
+}

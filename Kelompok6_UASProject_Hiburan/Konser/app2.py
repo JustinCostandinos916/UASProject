@@ -73,17 +73,13 @@ class TiketKonserApp:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
         
-        @self.app.route('/konser/<int:konser_id>')
+        @self.app.route('/konser<int:konser_id>')
         def konser_detail(konser_id):
-            if 'user_id' not in session:
+            if user == 'Login':
                 flash('Silakan login terlebih dahulu.', 'warning')
-                return redirect(url_for('home'))
-
-            cur = self.con.mysql.cursor()
-            cur.execute("SELECT * FROM section WHERE idkonser = %s", (konser_id,))
-            sections = cur.fetchall()
-            cur.close()
-            return render_template(f'lokasi{konser_id}.html', sections=sections, konser_id=konser_id)
+                return redirect(url_for('login'))
+            else:
+                return render_template(f'lokasi{konser_id}.html')
 
         @self.app.route('/pesan/<int:konser_id>/<int:section_id>', methods=['GET', 'POST'])
         def booking(konser_id, section_id):

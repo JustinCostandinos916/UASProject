@@ -16,23 +16,23 @@
 
     <main>
       <div class="card-container">
-        <div class="tour-card">
-          <a href="{{ url_for('konser_detail', konser_id=1) }}">
+        <a href="{{ url_for('konser_detail', konser_id=1) }}">
+          <div class="tour-card">
             <img src="{{ url_for('static', filename='jakarta.jpg') }}" alt="Jakarta" />
-          </a>
-        </div>
+          </div>
+        </a>
 
-        <div class="tour-card">
-          <a href="{{ url_for('konser_detail', konser_id=2) }}">
+        <a href="{{ url_for('konser_detail', konser_id=2) }}">
+          <div class="tour-card">
             <img src="{{ url_for('static', filename='bandung.jpg') }}" alt="Bandung" />
-          </a>
-        </div>
+          </div>
+        </a>
 
-        <div class="tour-card">
-          <a href="{{ url_for('konser_detail', konser_id=3) }}">
+        <a href="{{ url_for('konser_detail', konser_id=3) }}">
+          <div class="tour-card">
             <img src="{{ url_for('static', filename='surabaya.jpg') }}" alt="Surabaya" />
-          </a>
-        </div>
+          </div>
+        </a>
       </div>
       <p class="desc">This concert will take place in several places!</p>
     </main>
