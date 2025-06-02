@@ -55,19 +55,19 @@ class TiketKonserApp:
                 phone = request.form["phone"]
                 cur = self.con.mysql.cursor()
                 if password == confirmpw:
-                    try:
-                        cur.execute(
-                            'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)',
-                            (username, password, confirmpw, phone)
-                        )
-                        self.con.mysql.commit()
-                        cur.close()
-                        return redirect(url_for('login'))
-                    except Exception as e:
-                        user = None
-                        flash('Registrasi Gagal!', 'danger')
-                        cur.close()
-                        return redirect(url_for('register'))
+                    # try:
+                    cur.execute(
+                        'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)',
+                        (username, password, confirmpw, phone)
+                    )
+                    self.con.mysql.commit()
+                    cur.close()
+                    return redirect(url_for('login'))
+                    # except Exception as e:
+                    user = None
+                    flash('Registrasi Gagal!', 'danger')
+                    cur.close()
+                    return redirect(url_for('register'))
                 else:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
