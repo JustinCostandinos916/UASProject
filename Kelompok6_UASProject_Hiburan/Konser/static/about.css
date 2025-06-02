@@ -98,3 +98,8 @@ footer nav a {
 footer nav a:hover {
   text-decoration: underline;
 }
+
+.Gregtour {
+  text-decoration: None;
+  color: inherit;
+}

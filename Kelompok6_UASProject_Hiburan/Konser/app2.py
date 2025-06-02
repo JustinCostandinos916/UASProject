@@ -16,6 +16,7 @@ class TiketKonserApp:
     def routes(self):
         @self.app.route('/Home')
         def home():
+            global user
             return render_template("home.html", a=user)
 
         @self.app.route('/login/')

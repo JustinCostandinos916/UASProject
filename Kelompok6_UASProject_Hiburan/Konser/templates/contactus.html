@@ -7,16 +7,12 @@
     <title>Contact Us</title>
   </head>
   <body>
-    <nav>
-      <a href="contactus.html">Judul</a>
-      <ul>
-        <li><a href="home.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contactus.html">Contact Us</a></li>
-      </ul>
-    </nav>
-
-    <h1>Contact Us</h1>
+    <header>
+      <a class="Gregtour" href="{{url_for('home')}}"
+        ><h1>Greg's<span class="pink">Tour</span></h1></a
+      >
+      <a href="{{ url_for('login') }}" class="login-btn">{{a}}</a>
+    </header>
 
     <p align="justify">
       If you have any questions, feedback, or require assistance related to the <b>2025 Greg Tour [Sway & Slay]</b>,
@@ -51,5 +47,18 @@
     <p align="center" style="margin-top: 30px">
       We typically respond within 24 - 48 hours. Thank you for your support!
     </p>
+
+    <footer>
+      <p class="terms">
+        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
+        applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+      </p>
+      <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('contact') }}">Contact us</a>
+        <!-- ✅ Perbaikan -->
+      </nav>
+    </footer>
   </body>
 </html>
