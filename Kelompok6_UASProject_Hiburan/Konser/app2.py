@@ -5,7 +5,8 @@ import hashlib
 import os, pdfkit, pymysql
 
 user = None
-
+if user is None:
+    user = 'Login'
 class TiketKonserApp:    
     def __init__(self):
         self.app = Flask(__name__)
@@ -186,7 +187,7 @@ class TiketKonserApp:
 
         @self.app.route('/about')
         def about():
-            return render_template('about.html')
+            return render_template('about.html', a=user)
 
         @self.app.route('/contact')
         def contact():
