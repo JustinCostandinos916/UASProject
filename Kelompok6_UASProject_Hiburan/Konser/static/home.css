@@ -278,3 +278,7 @@ footer nav a:hover {
 .gambarlink {
   pointer-events: auto;
 }
+
+header {
+  background-color: black;
+}

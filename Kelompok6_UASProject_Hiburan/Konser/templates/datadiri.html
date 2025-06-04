@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>data diri</title>
-</head>
-<body>
+  </head>
+  <body>
     <h2>Data Diri</h2>
-    <form method="post" action="{{ url_for('booking', konser_id=konser_id, section_id=section_id) }}">
-        <table>
-            <tr>
-                <td>Name</td>
-                <td><input type="text" name="name" required /></td>
-            </tr>
-            <tr>
-                <td>Phone</td>
-                <td><input type="text" name="phone" required /></td>
-            </tr>
-            <tr>
-                <td>Email</td>
-                <td><input type="email" name="email" required /></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" name="action" value="Invoice"/>
-                </td>
-            </tr>
-        </table> 
+    <form method="post" action="{{ url_for('pesanprocess') }}">
+      <table>
+        <tr>
+          <td>Name</td>
+          <td><input type="text" name="name" required /></td>
+        </tr>
+        <tr>
+          <td>Phone</td>
+          <td><input type="text" name="phone" required /></td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td><input type="email" name="email" required /></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <input type="submit" name="action" value="Invoice" />
+          </td>
+        </tr>
+      </table>
     </form>
-</body>
+  </body>
 </html>
