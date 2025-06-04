@@ -72,7 +72,7 @@ footer nav a {
   font-size: 20px;
 }
 
-footer nav a:hover {* {
+footer nav a:hover{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -151,7 +151,32 @@ footer nav a {
 }
 
 footer nav a:hover {
-  text-decoration: underline;
+  text-decoration: underline;
 }
-  text-decoration: underline;
+
+
+.content fieldset {
+   background-color: white;
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  width: 95%;
+  margin: 0 auto;
+}
+
+
+.content table[border="1"] {
+   background-color: white;
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.content table[border="1"] td {
+  padding: 10px;
+  border: 1px solid #ddd;
 }

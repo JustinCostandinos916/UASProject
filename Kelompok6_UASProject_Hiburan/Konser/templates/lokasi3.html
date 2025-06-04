@@ -3,25 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='lokasi3.css') }}" />
     <title>Surabaya</title>
   </head>
   <body>
-    <nav>
-      <a href="home.html">Judul</a>
-      <ul>
-        <li><a href="home.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contactus.html">Contact Us</a></li>
-      </ul>
-    </nav>
+  <header>
+      <h1>Greg's <span class="pink"> Tour</span></h1>
+      <a href="login.html" class="login-btn">Login</a>
+    </header>
 
-    <h1>2025 Greg Tour [Sway & Slay] In Indonesia - Surabaya</h1>
+    <br />
+   <h1 style="text-align: center;">2025 Greg Tour [Sway & Slay] In Indonesia - Surabaya</h1>
+    <br />
+
     <h2>Event Details</h2>
     <table>
       <tr>
         <td>Date</td>
-        <td>: Tuesday, 16 January 2025</td>
+        <td>: Friday, 19 January 2025</td>
       </tr>
       <tr>
         <td>Time</td>
@@ -33,7 +32,10 @@
       </tr>
     </table>
 
+    <br />
     <h3>Venue Details</h3>
+    <br />
+
     <iframe
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.15454863754!2d112.6202135741587!3d-7.223206492782723!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e780077bbe842bd%3A0x5bae25577c4ec420!2sGelora%20Bung%20Tomo%20(GBT)%20Stadium!5e0!3m2!1sen!2sid!4v1748753606366!5m2!1sen!2sid"
       width="500"
@@ -46,115 +48,130 @@
     <img src="https://akcdn.detik.net.id/community/media/visual/2023/11/08/seating-plan-tiket-konser-coldplay-jakarta-2023.png?w=620&q=90" alt="">
     -->
 
+    <br />
     <h2>Ticket Sales</h2>
-    <form method="POST">
-      <!-- Festival -->
-      <fieldset>
-        <h3>Festival</h3>
-        <ul>
-          <li><i>Soundcheck</i></li>
-          <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
-        </ul>
-        <table width="100%">
+    <br />
+    <div class="content">
+      <form method="post">
+        <fieldset>
+          <h3>CAT 1</h3>
+          <ul>
+            <li><i>Soundcheck</i></li>
+            <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
+          </ul>
+          <table width="100%">
+            <tr>
+              <td><h3>Rp 3.220.000</h3></td>
+              <td align="right">
+                <select name="festival" onchange="updateSummary()" id="festival">
+                  <option value="0" selected>0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+        <br />
+        <!-- Cat 2 -->
+        <fieldset>
+          <h3>CAT 2</h3>
+          <ul>
+            <li><i>Seating</i></li>
+            <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
+          </ul>
+          <table width="100%">
+            <tr>
+              <td><h3>Rp. 2.702.500</h3></td>
+              <td align="right">
+                <select name="cat2" onchange="updateSummary()" id="cat2">
+                  <option value="0" selected>0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+        <br />
+        <!-- Cat 3 -->
+        <fieldset>
+          <h3>CAT 3</h3>
+          <ul>
+            <li><i>Seating</i></li>
+            <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
+          </ul>
+          <table width="100%">
+            <tr>
+              <td><h3>Rp. 2.242.500</h3></td>
+              <td align="right">
+                <select name="cat3" onchange="updateSummary()" id="cat3">
+                  <option value="0" selected>0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+        <br />
+        <!-- Cat 4 -->
+        <fieldset>
+          <h3>CAT 4</h3>
+          <ul>
+            <li><i>Seating</i></li>
+            <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
+          </ul>
+          <table width="100%">
+            <tr>
+              <td><h3>Rp. 1.552.500</h3></td>
+              <td align="right">
+                <select name="cat4" onchange="updateSummary()" id="cat4">
+                  <option value="0" selected>0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+        <br />
+        <table border="1" cellpadding="10" cellspacing="0">
           <tr>
-            <td><h3>Rp 3.220.000</h3></td>
-            <td align="right">
-              <select name="festival" onchange="updateSummary()" id="festival">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
+            <td colspan="2">Added tickets will be listed here</td>
+          </tr>
+          <tr>
+            <td>Subtotal (<span id="ticketCount">0</span> ticket)</td>
+            <td>Rp. <span id="subtotal">0</span></td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center">
+              <button>Order Now</button>
             </td>
           </tr>
         </table>
-      </fieldset>
-      <br />
-      <!-- Cat 2 -->
-      <fieldset>
-        <h3>CAT 2</h3>
-        <ul>
-          <li><i>Seating</i></li>
-          <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
-        </ul>
-        <table width="100%">
-          <tr>
-            <td><h3>Rp. 2.702.500</h3></td>
-            <td align="right">
-              <select name="cat2" onchange="updateSummary()" id="cat2">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-      <br />
-      <!-- Cat 3 -->
-      <fieldset>
-        <h3>CAT 3</h3>
-        <ul>
-          <li><i>Seating</i></li>
-          <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
-        </ul>
-        <table width="100%">
-          <tr>
-            <td><h3>Rp. 2.242.500</h3></td>
-            <td align="right">
-              <select name="cat3" onchange="updateSummary()" id="cat3">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-      <br />
-      <!-- Cat 4 -->
-      <fieldset>
-        <h3>CAT 4</h3>
-        <ul>
-          <li><i>Seating</i></li>
-          <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
-        </ul>
-        <table width="100%">
-          <tr>
-            <td><h3>Rp. 1.552.500</h3></td>
-            <td align="right">
-              <select name="cat4" onchange="updateSummary()" id="cat4">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-    </form>
+      </form>
+    </div>
 
-    <table border="1" cellpadding="10" cellspacing="0">
-      <tr>
-        <td colspan="2">Added tickets will be listed here</td>
-      </tr>
-      <tr>
-        <td>Subtotal (<span id="ticketCount">0</span> ticket)</td>
-        <td>Rp. <span id="subtotal">0</span></td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          <button>Order Now</button>
-        </td>
-      </tr>
-    </table>
+    <footer>
+      <p class="terms">
+        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
+        applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+      </p>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contactus.html" id="contact">Contact us</a>
+      </nav>
+    </footer>
 
     <script>
       function updateSummary() {
