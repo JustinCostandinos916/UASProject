@@ -77,7 +77,7 @@ class TiketKonserApp:
         @self.app.route('/konser<int:konser_id>/')
         def konser_detail(konser_id):
             if user == 'Login':
-                flash('Silakan login terlebih dahulu.', 'warning')
+                flash('Silakan login terlebih dahulu.', 'danger')
                 return redirect(url_for('login'))
             else:
                 return render_template(f'lokasi{konser_id}.html')
@@ -87,24 +87,30 @@ class TiketKonserApp:
             konser_id = session.get('konser_id')
             return render_template('datadiri.html', konser_id=konser_id)
         
-        @self.app.route('/konser<int:konser_id>/process', methods=['POST'])
+        @self.app.route('/konser<int:konser_id>/process', methods=['GET','POST'])
         def jumlahtiket(konser_id):
             if request.method == 'POST':
-                session['tmptduduk'] = {
-                    'festival' : int(request.form['festival']),  
-                    'cat2' : int(request.form["cat2"]), 
-                    'cat3' : int(request.form["cat3"]), 
-                    'cat4' : int(request.form["cat4"])
-                }
-                session['totalsemuaharga'] = request.form['total_harga']
-                session['totalsemuatiket'] = request.form['total_tiket']
-                jumlahtiket = []
-                tmptduduk = session['tmptduduk']
-                for i in tmptduduk:
-                    if tmptduduk[i] != 0:
-                        jumlahtiket.append(tmptduduk[i])
-                session['konser_id']=konser_id
-                return redirect(url_for('datadiri'))
+                if request.form['total_tiket'] != '0':
+                    session['tmptduduk'] = {
+                        'festival' : int(request.form['festival']),  
+                        'cat2' : int(request.form["cat2"]), 
+                        'cat3' : int(request.form["cat3"]), 
+                        'cat4' : int(request.form["cat4"])
+                    }
+                    session['totalsemuaharga'] = request.form['total_harga']
+                    session['totalsemuatiket'] = request.form['total_tiket']
+                    jumlahtiket = []
+                    tmptduduk = session['tmptduduk']
+                    for i in tmptduduk:
+                        if tmptduduk[i] != 0:
+                            jumlahtiket.append(tmptduduk[i])
+                    session['konser_id']=konser_id
+                    return redirect(url_for('datadiri'))
+                else:
+                    flash('Anda Belum Memilih Jumlah Tiket!', 'danger')
+                    return redirect(url_for('jumlahtiket', konser_id=konser_id))
+            return render_template(f'lokasi{konser_id}.html')
+
         
         @self.app.route('/purchase-report', methods=['POST'])
         def purchase_report():

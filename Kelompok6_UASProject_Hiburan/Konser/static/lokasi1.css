@@ -174,3 +174,10 @@ footer nav a:hover {
   padding: 10px;
   border: 1px solid #ddd;
 }
+
+.alertpassword {
+  color: red;
+  margin: auto;
+  margin-top: 20px;
+  font-weight: bold;
+}
