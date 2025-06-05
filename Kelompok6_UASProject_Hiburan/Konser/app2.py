@@ -31,7 +31,7 @@ class TiketKonserApp:
                 cur = self.con.mysql.cursor()
                 pw = hashlib.md5(password.encode()).hexdigest()
                 password = pw[:30]
-                cur.execute("SELECT * FROM user WHERE username = %s AND password = %s", (username, password))
+                cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
                 row = cur.fetchone()
                 global user
                 if row:
@@ -72,25 +72,8 @@ class TiketKonserApp:
                 else:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
-<<<<<<< HEAD
-            
-        @self.app.route('/konser')
-        def konser_list():
-            if 'user_id' not in session:
-                flash('Silakan login terlebih dahulu.', 'warning')
-                return redirect(url_for('home'))
-
-            cur = self.con.mysql.cursor()
-            cur.execute("SELECT * FROM konser")
-            konser = cur.fetchall()
-            cur.close()
-            return render_template('lokasi.html', konser=konser)
-
-        @self.app.route('/konser/<int:konser_id>')
-=======
         
         @self.app.route('/konser<int:konser_id>')
->>>>>>> 15da5d30c1de79ab57569529b7a9b4584b90cbd8
         def konser_detail(konser_id):
             if user == 'Login':
                 flash('Silakan login terlebih dahulu.', 'warning')
