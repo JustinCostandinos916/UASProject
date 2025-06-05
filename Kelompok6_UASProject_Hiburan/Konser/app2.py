@@ -1,14 +1,21 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 from config import Config
 from datetime import datetime
 from collections import OrderedDict
 import hashlib
 import os, pdfkit, pymysql
+=======
+from flask import Flask, render_template, redirect, url_for, session, flash, request
+from config import Config
+from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+import os, traceback
+import pdfkit
+import pymysql
+>>>>>>> 6b9fd1b4f0dc8f68c811a3b9dc5dda6dd61e5d01
 
-user = None
-if user is None:
-    user = 'Login'
-class TiketKonserApp:    
+class TiketKonserApp:
     def __init__(self):
         self.app = Flask(__name__)
         self.app.secret_key = "konser_secret_123"
@@ -18,70 +25,131 @@ class TiketKonserApp:
     def routes(self):
         @self.app.route('/Home')
         def home():
-            return render_template("home.html", a=user)
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            
+            # Ambil data lokasi
+            cur.execute("SELECT * FROM lokasi")
+            daftar_lokasi = cur.fetchall()
+
+            # Ambil nama user dari session
+            username = None
+            if 'user_id' in session:
+                cur.execute("SELECT username FROM users WHERE id = %s", (session['user_id'],))
+                user = cur.fetchone()
+                if user:
+                    username = user['username']
+
+            cur.close()
+            return render_template("home.html", daftar_lokasi=daftar_lokasi, username=username)
+
 
         @self.app.route('/login/')
         def login():
             return render_template('login.html')
-        
+
         @self.app.route('/login/process', methods=['POST'])
         def loginprocess():
-            if request.method == 'POST':
-                username = request.form.get('username')
-                password = request.form.get('password')
-                cur = self.con.mysql.cursor()
-                pw = hashlib.md5(password.encode()).hexdigest()
-                password = pw[:30]
-                cur.execute("SELECT * FROM user WHERE username = %s AND password = %s", (username, password))
-                row = cur.fetchone()
-                global user
-                if row:
-                    user = row[0]
-                    cur.close()
-                    return redirect(url_for('home'))
+            username = request.form.get('username')
+            password = request.form.get('password')
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            cur.execute("SELECT * FROM users WHERE username = %s", (username,))
+            user = cur.fetchone()
+            cur.close()
+            if user and check_password_hash(user['password'], password):
+                session['user_id'] = user['id']
+                session['role'] = user['role']
+                
+                if user['role'] == 'admin':
+                    flash('Login berhasil sebagai admin.', 'success')
+                    return redirect(url_for('admin_dashboard'))
                 else:
-                    flash('Username atau password salah!', 'danger')
-                    cur.close()
-                    return redirect(url_for('login'))
+                    return redirect(url_for('home'))
+
+            else:
+                flash('Username atau password salah!', 'danger')
+                return redirect(url_for('login'))
+
+        @self.app.route('/admin/dashboard')
+        def admin_dashboard():
+            if 'user_id' not in session or session.get('role') != 'admin':
+                flash('Hanya admin yang bisa mengakses dashboard ini.', 'danger')
+                return redirect(url_for('home'))
+
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            cur.execute("SELECT SUM(total_harga) AS total_pendapatan FROM purchase_report")
+            total_pendapatan = cur.fetchone()['total_pendapatan'] or 0
+            cur.execute("SELECT nama_barang, SUM(jumlah) AS total FROM purchase_report GROUP BY nama_barang")
+            penjualan = cur.fetchall()
+            cur.execute("SELECT COUNT(*) AS jumlah FROM purchase_report WHERE tanggal_beli = CURDATE()")
+            pembelian_hari_ini = cur.fetchone()['jumlah']
+            cur.execute("SELECT id, username, email, role, created_at FROM users")
+            users = cur.fetchall()
+            cur.close()
+
+            return render_template('admin_dashboard.html',
+                                   total_pendapatan=total_pendapatan,
+                                   pembelian_hari_ini=pembelian_hari_ini,
+                                   penjualan=penjualan,
+                                   users=users)
         
+        @self.app.route('/admin/users/reset/<int:id>')
+        def reset_password(id):
+            default_pw = generate_password_hash("password123")
+            cur = self.con.mysql.cursor()
+            cur.execute("UPDATE users SET password = %s WHERE id = %s", (default_pw, id))
+            self.con.mysql.commit()
+            cur.close()
+            flash("Password berhasil di-reset ke 'password123'.", "info")
+            return redirect(url_for('admin_dashboard'))
+        
+        @self.app.route('/admin/users/delete/<int:id>')
+        def delete_user(id):
+            cur = self.con.mysql.cursor()
+
+            # Hapus semua pembelian user ini
+            cur.execute("DELETE FROM purchase_report WHERE user_id = %s", (id,))
+
+            # Baru hapus user
+            cur.execute("DELETE FROM users WHERE id = %s", (id,))
+            
+            self.con.mysql.commit()
+            cur.close()
+
+            flash("User dan data pembeliannya berhasil dihapus.", "info")
+            return redirect(url_for('admin_dashboard'))
+
+
         @self.app.route('/register/')
         def register():
             return render_template('register.html')
-        
+
         @self.app.route('/register/process', methods=['POST'])
         def registerprocess():
-            if request.method == 'POST':
-                username = request.form['username']
-                password = request.form['password']
-                confirmpw = request.form["confirmpw"]
-                phone = request.form["phone"]
-                cur = self.con.mysql.cursor()
-                if password == confirmpw:
-                    try:
-                        cur.execute(
-                            'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)',
-                            (username, password, confirmpw, phone)
-                        )
-                        self.con.mysql.commit()
-                        cur.close()
-                        return redirect(url_for('login'))
-                    except Exception as e:
-                        user = None
-                        flash('Registrasi Gagal!', 'danger')
-                        cur.close()
-                        return redirect(url_for('register'))
-                else:
-                    flash('Konfirmasi password salah!', 'danger')
-                    return redirect(url_for('register'))
-        
-        @self.app.route('/konser<int:konser_id>/')
-        def konser_detail(konser_id):
-            if user == 'Login':
+            username = request.form.get('username')
+            password = request.form.get('password')
+            email = request.form.get('email')
+            hashed_pw = generate_password_hash(password)
+            cur = self.con.mysql.cursor()
+            try:
+                cur.execute(
+                    'INSERT INTO users (username, email, password) VALUES (%s, %s, %s)',
+                    (username, email, hashed_pw)
+                )
+                self.con.mysql.commit()
+                cur.close()
+                return redirect(url_for('login'))
+            except:
+                flash('Registrasi Gagal!', 'danger')
+                cur.close()
+                return redirect(url_for('register'))
+
+        @self.app.route('/konser<int:lokasi_id>')
+        def konser_detail(lokasi_id):
+            if 'user_id' not in session:
                 flash('Silakan login terlebih dahulu.', 'warning')
                 return redirect(url_for('login'))
-            else:
-                return render_template(f'lokasi{konser_id}.html')
 
+<<<<<<< HEAD
         @self.app.route('/pesan/')
         def datadiri():
             konser_id = session.get('konser_id')
@@ -179,97 +247,236 @@ class TiketKonserApp:
         #     if 'user_id' not in session:
         #         flash('Silakan login terlebih dahulu.', 'warning')
         #         return redirect(url_for('home'))
+=======
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            cur.execute("SELECT * FROM kategori_tempat_duduk WHERE lokasi_id = %s", (lokasi_id,))
+            kategori = cur.fetchall()
+            cur.execute("SELECT * FROM lokasi WHERE id = %s", (lokasi_id,))
+            lokasi = cur.fetchone()
+            cur.close()
 
-        #     if request.method == 'POST':
-        #         nama = request.form['nama']
-        #         hp = request.form['hp']
-        #         email = request.form['email']
-        #         tanggal = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        #         action = request.form.get('action')
+            if not lokasi:
+                flash('Lokasi tidak ditemukan.', 'danger')
+                return redirect(url_for('home'))
 
-        #         cur = self.con.mysql.cursor(dictionary=True)
-        #         cur.execute("SELECT quota, sold FROM section WHERE id = %s", (section_id,))
-        #         section = cur.fetchone()
+            lokasi_nama = lokasi['nama_kota']
+            lokasi_map = lokasi.get('link_maps') or 'https://maps.google.com'
 
-        #         festival = int(request.form.get('festival', 0))
-        #         cat2 = int(request.form.get('cat2', 0))
-        #         cat3 = int(request.form.get('cat3', 0))
-        #         cat4 = int(request.form.get('cat4', 0))
-        #         total_tiket = festival + cat2 + cat3 + cat4
+            return render_template(
+                "lokasi.html",
+                kategori=kategori,
+                lokasi_nama=lokasi_nama,
+                lokasi_map=lokasi_map,
+                lokasi_id=lokasi_id,
+                lokasi=lokasi
+            )
 
-        #         if total_tiket == 0:
-        #             flash('Jumlah tiket tidak boleh kurang dari 1!', 'danger')
-        #             cur.close()
-        #             return redirect(url_for('konser_detail', konser_id=konser_id))
+        @self.app.route('/pesan/<int:lokasi_id>', methods=['GET', 'POST'])
+        def booking(lokasi_id):
+            if 'user_id' not in session:
+                flash('Silakan login terlebih dahulu.', 'warning')
+                return redirect(url_for('home'))
 
-        #         if section['sold'] + total_tiket > section['quota']:
-        #             flash('Section sudah penuh!', 'danger')
-        #             cur.close()
-        #             return redirect(url_for('konser_detail', konser_id=konser_id))
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            cur.execute("SELECT * FROM kategori_tempat_duduk WHERE lokasi_id = %s", (lokasi_id,))
+            kategori_list = cur.fetchall()
+            cur.execute("SELECT quota, sold FROM lokasi WHERE id = %s", (lokasi_id,))
+            lokasi_data = cur.fetchone()
+            quota = lokasi_data['quota']
+            sold_sekarang = lokasi_data['sold'] or 0
+            sisa_kuota = quota - sold_sekarang
 
-        #         harga_festival = 3220000
-        #         harga_cat2 = 2702500
-        #         harga_cat3 = 2242500
-        #         harga_cat4 = 1552500
+            if request.method == 'POST':
+                nama = request.form.get('nama')
+                hp = request.form.get('hp')
+                email = request.form.get('email')
+                tanggal = datetime.now().strftime('%Y-%m-%d')
+>>>>>>> 6b9fd1b4f0dc8f68c811a3b9dc5dda6dd61e5d01
 
-        #         if festival > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, festival, harga_festival)
-        #             )
-        #         if cat2 > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat2, harga_cat2)
-        #             )
-        #         if cat3 > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat3, harga_cat3)
-        #             )
-        #         if cat4 > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat4, harga_cat4)
-        #             )
+                if not nama or not hp or not email:
+                    flash('Semua field data diri wajib diisi.', 'danger')
+                    cur.close()
+                    return redirect(url_for('konser_detail', lokasi_id=lokasi_id))
 
-        #         cur.execute("UPDATE section SET sold = sold + %s WHERE id = %s", (total_tiket, section_id))
-        #         self.con.mysql.commit()
-        #         cur.close()
+                total_tiket = 0
+                total_harga = 0
+                pembelian = []
 
-        #         session['tiket_data'] = {
-        #             'festival': {'jumlah': festival, 'harga': harga_festival},
-        #             'cat2': {'jumlah': cat2, 'harga': harga_cat2},
-        #             'cat3': {'jumlah': cat3, 'harga': harga_cat3},
-        #             'cat4': {'jumlah': cat4, 'harga': harga_cat4}
-        #         }
+                for kategori in kategori_list:
+                    field_name = kategori['nama_kategori'].lower().replace(' ', '')
+                    try:
+                        jumlah = int(request.form.get(field_name, 0))
+                    except ValueError:
+                        jumlah = 0
 
-        #         if action == 'Invoice':
-        #             return redirect(url_for('pdf'))
+                    if jumlah > 0:
+                        if kategori['sold'] is None:
+                            kategori['sold'] = 0
+                        pembelian.append({
+                            'nama_kategori': kategori['nama_kategori'],
+                            'jumlah': jumlah,
+                            'harga': kategori['harga']
+                        })
+                        total_tiket += jumlah
+                        total_harga += jumlah * float(kategori['harga'])
 
-        #         flash("See you on the concert!", "success")
-        #         return redirect(url_for('home'))
+                if total_tiket == 0:
+                    flash('Pilih setidaknya 1 tiket untuk melanjutkan!', 'danger')
+                    return redirect(request.url)
 
-        #     return render_template('datadiri.html', konser_id=konser_id, section_id=section_id)
+                if total_tiket > sisa_kuota:
+                    flash(f'Sisa kuota hanya {sisa_kuota} tiket. Kurangi jumlah pembelian.', 'danger')
+                    return redirect(request.url)
 
-        # @self.app.route('/purchase-report')
-        # def pdf():
-        #     tiket_data = session.get('tiket_data', {})
-        #     total_harga = sum(info['jumlah'] * info['harga'] for info in tiket_data.values())
-        #     jumlah_tiket = sum(info['jumlah'] for info in tiket_data.values())
+                for beli in pembelian:
+                    cur.execute("""
+                        INSERT INTO purchase_report (
+                            user_id, nama_pembeli, no_hp, email,
+                            nama_barang, jumlah, total_harga, tanggal_beli, lokasi_id
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        session['user_id'], nama, hp, email,
+                        beli['nama_kategori'], beli['jumlah'],
+                        beli['jumlah'] * beli['harga'], tanggal,
+                        lokasi_id
+                    ))
 
-        #     rendered = render_template(
-        #         'purchasereport.html',
-        #         data=tiket_data,
-        #         total_harga=total_harga,
-        #         jumlah_tiket=jumlah_tiket
-        #     )
-        #     configpdf = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-        #     filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-        #     filepath = f"uasproject/static/pdf/{filename}"
-        #     pdfkit.from_string(rendered, filepath, configuration=configpdf)
-        #     flash('Success Download Invoice', 'success')
-        #     return redirect(url_for('home'))
+                    cur.execute("""
+                        UPDATE kategori_tempat_duduk
+                        SET sold = sold + %s
+                        WHERE nama_kategori = %s AND lokasi_id = %s
+                    """, (beli['jumlah'], beli['nama_kategori'], lokasi_id))
+
+                cur.execute("""
+                    UPDATE lokasi
+                    SET sold = (
+                        SELECT SUM(sold)
+                        FROM kategori_tempat_duduk
+                        WHERE lokasi_id = %s
+                    )
+                    WHERE id = %s
+                """, (lokasi_id, lokasi_id))
+
+                self.con.mysql.commit()
+                cur.close()
+
+                session['last_invoice_date'] = tanggal
+                return redirect(url_for('pdf'))
+
+            cur.close()
+            return render_template('datadiri.html', lokasi_id=lokasi_id, kategori=kategori_list)
+
+        @self.app.route('/purchase-report')
+        def pdf():
+            if 'user_id' not in session:
+                flash('Silakan login terlebih dahulu.', 'warning')
+                return redirect(url_for('login'))
+
+            last_date = session.get('last_invoice_date')
+            if not last_date:
+                flash('Tidak ada data pembelian terbaru.', 'info')
+                return redirect(url_for('home'))
+
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            cur.execute("""
+                SELECT p.nama_barang, p.jumlah, p.total_harga,
+                    p.nama_pembeli, p.no_hp, p.email, l.nama_kota AS nama_lokasi
+                FROM purchase_report p
+                JOIN lokasi l ON p.lokasi_id = l.id
+                WHERE p.user_id = %s AND p.tanggal_beli = %s
+            """, (session['user_id'], last_date))
+            pembelian = cur.fetchall()
+            cur.close()
+
+            if not pembelian:
+                flash('Tidak ada data pembelian untuk dicetak.', 'info')
+                return redirect(url_for('home'))
+
+            total_harga = sum(item['total_harga'] for item in pembelian)
+            jumlah_tiket = sum(item['jumlah'] for item in pembelian)
+            user_info = pembelian[0]
+            rendered = render_template(
+                'purchasereport.html',
+                data=pembelian,
+                total_harga=total_harga,
+                jumlah_tiket=jumlah_tiket,
+                nama=user_info['nama_pembeli'],
+                hp=user_info['no_hp'],
+                email=user_info['email'],
+                lokasi=user_info['nama_lokasi']
+            )
+            options = {
+                'enable-local-file-access': '',
+                'quiet': '',
+                'page-size': 'A4',
+                'encoding': 'UTF-8'
+            }
+            configpdf = pdfkit.configuration(wkhtmltopdf=r'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+
+            output_dir = os.path.join(os.getcwd(), 'static', 'pdf')
+            os.makedirs(output_dir, exist_ok=True)
+
+            filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            filepath = os.path.join(output_dir, filename)
+
+            try:
+                with open("debug_rendered.html", "w", encoding="utf-8") as f:
+                    f.write(rendered)
+                pdfkit.from_string(rendered, filepath, configuration=configpdf, options=options)
+                flash('Invoice berhasil dibuat.', 'success')
+                return redirect(url_for('static', filename=f'pdf/{filename}'))
+            except Exception as e:
+                print("GAGAL BUAT PDF:")
+                print(traceback.format_exc())
+                flash(f'Gagal membuat PDF: {str(e)}', 'danger')
+                return redirect(url_for('home'))
+
+        @self.app.route('/admin/export-pdf')
+        def export_admin_dashboard_pdf():
+            if 'user_id' not in session or session.get('role') != 'admin':
+                flash('Hanya admin yang bisa mencetak laporan.', 'danger')
+                return redirect(url_for('home'))
+
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            cur.execute("SELECT SUM(total_harga) AS total_pendapatan FROM purchase_report")
+            total_pendapatan = cur.fetchone()['total_pendapatan'] or 0
+            cur.execute("SELECT nama_barang, SUM(jumlah) AS total FROM purchase_report GROUP BY nama_barang")
+            penjualan = cur.fetchall()
+            cur.execute("SELECT COUNT(*) AS jumlah FROM purchase_report WHERE tanggal_beli = CURDATE()")
+            pembelian_hari_ini = cur.fetchone()['jumlah']
+            cur.execute("SELECT id, username, email, role, created_at FROM users")
+            users = cur.fetchall()
+            cur.close()
+
+            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            rendered = render_template('admin_dashboard_pdf.html',
+                                      total_pendapatan=total_pendapatan,
+                                      pembelian_hari_ini=pembelian_hari_ini,
+                                      penjualan=penjualan,
+                                      users=users,
+                                      now=now_str)
+            options = {
+                'enable-local-file-access': '',
+                'quiet': '',
+                'page-size': 'A4',
+                'encoding': 'UTF-8'
+            }
+            configpdf = pdfkit.configuration(wkhtmltopdf=r'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+
+            output_dir = os.path.join(os.getcwd(), 'static', 'pdf')
+            os.makedirs(output_dir, exist_ok=True)
+
+            filename = f"admin_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            filepath = os.path.join(output_dir, filename)
+
+            try:
+                pdfkit.from_string(rendered, filepath, configuration=configpdf, options=options)
+                flash('Laporan PDF berhasil dibuat.', 'success')
+                return redirect(url_for('static', filename=f'pdf/{filename}'))
+            except Exception as e:
+                print(traceback.format_exc())
+                flash(f'Gagal membuat PDF: {str(e)}', 'danger')
+                return redirect(url_for('admin_dashboard'))
 
         @self.app.route('/logout')
         def logout():
@@ -279,7 +486,7 @@ class TiketKonserApp:
 
         @self.app.route('/about')
         def about():
-            return render_template('about.html', a=user)
+            return render_template('about.html')
 
         @self.app.route('/contact')
         def contact():

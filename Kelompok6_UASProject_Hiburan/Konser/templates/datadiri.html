@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<<<<<<< HEAD
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,4 +32,75 @@
       </table>
     </form>
   </body>
+=======
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Diri Pemesan</title>
+</head>
+<body>
+  <h1>Form Pemesanan Tiket</h1>
+
+  <form method="post">
+   
+    <fieldset>
+      <legend>Pilih Jumlah Tiket</legend>
+      {% for item in kategori %}
+        {% set field_name = item.nama_kategori.lower().replace(' ', '') %}
+        <fieldset class="ticket-option" data-field="{{ field_name }}">
+          <h3>{{ item.nama_kategori }}</h3>
+          <ul>
+            <li><i>{{ item.deskripsi or 'No description available.' }}</i></li>
+            <li><i>Termasuk pajak dan biaya platform</i></li>
+          </ul>
+          <table width="100%">
+            <tr>
+              <td><h3>Rp {{ "{:,.0f}".format(item.harga) }}</h3></td>
+              <td align="right">
+                <select name="{{ field_name }}" id="{{ field_name }}" data-harga="{{ item.harga }}" onchange="updateSummary()">
+                  {% for i in range(0, 5) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+        <br>
+      {% endfor %}
+    </fieldset>
+    <br>
+
+    
+    <fieldset>
+      <legend>Data Diri</legend>
+      <label>Nama:</label><br>
+      <input type="text" name="nama" required><br><br>
+
+      <label>No HP:</label><br>
+      <input type="text" name="hp" required><br><br>
+
+      <label>Email:</label><br>
+      <input type="email" name="email" required><br><br>
+    </fieldset>
+
+    
+    <table border="1" cellpadding="10" cellspacing="0">
+      <tr>
+        <td colspan="2">Added tickets will be listed here</td>
+      </tr>
+      <tr>
+        <td>Subtotal (<span id="ticketCount">0</span> ticket)</td>
+        <td>Rp. <span id="subtotal">0</span></td>
+      </tr>
+    </table>
+    <br>
+
+    <button type="submit" name="action" value="Invoice">Pesan & Cetak Invoice</button>
+  </form>
+
+  <p><a href="{{ url_for('konser_detail', lokasi_id=lokasi_id) }}">← Kembali ke halaman konser</a></p>
+
+  <script src="{{ url_for('static', filename='js/summary.js') }}"></script>
+</body>
+>>>>>>> 6b9fd1b4f0dc8f68c811a3b9dc5dda6dd61e5d01
 </html>

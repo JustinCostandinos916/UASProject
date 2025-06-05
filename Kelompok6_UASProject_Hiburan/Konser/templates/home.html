@@ -3,49 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
     <title>Home</title>
   </head>
   <body>
     <p>{{b}}</p>
     <header>
-      <a class="Gregtour" href="{{url_for('home')}}"
-        ><h1>Greg's<span class="pink">Tour</span></h1></a
-      >
-      <a href="{{ url_for('login') }}" class="login-btn">{{a}}</a>
+      <a href="{{ url_for('home') }}">
+        <h1>Greg's Tour</h1>
+        {% if username %}
+        <p><strong>{{ username }}</strong></p>
+        {% endif %}
+      </a>
+      <a href="{{ url_for('logout') if session.get('user_id') else url_for('login') }}">
+        {{ 'Logout' if session.get('user_id') else 'Login' }}
+      </a>
     </header>
 
     <main>
-      <div class="card-container">
-        <a href="{{ url_for('konser_detail', konser_id=1) }}">
-          <div class="tour-card">
-            <img src="{{ url_for('static', filename='jakarta.jpg') }}" alt="Jakarta" />
-          </div>
-        </a>
+      <h2>Daftar Lokasi Konser</h2>
 
-        <a href="{{ url_for('konser_detail', konser_id=2) }}">
-          <div class="tour-card">
-            <img src="{{ url_for('static', filename='bandung.jpg') }}" alt="Bandung" />
-          </div>
-        </a>
+      {% for lokasi in daftar_lokasi %}
+        <div>
+          <h3>{{ lokasi.nama_kota }}</h3>
+          {% if lokasi.gambar %}
+            <img src="{{ url_for('static', filename=lokasi.gambar) }}" alt="{{ lokasi.nama_kota }}" width="300">
+          {% endif %}
+          <p>{{ lokasi.deskripsi }}</p>
+          <p>Alamat: {{ lokasi.alamat_lokasi }}</p>
+          <a href="{{ url_for('konser_detail', lokasi_id=lokasi.id) }}">Lihat Tiket</a>
+        </div>
+        <hr>
+      {% endfor %}
 
-        <a href="{{ url_for('konser_detail', konser_id=3) }}">
-          <div class="tour-card">
-            <img src="{{ url_for('static', filename='surabaya.jpg') }}" alt="Surabaya" />
-          </div>
-        </a>
-      </div>
-      <p class="desc">This concert will take place in several places!</p>
+      <p>This concert will take place in several places!</p>
     </main>
 
     <footer>
-      <p class="terms">
+      <p>
         By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
         applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
       </p>
       <nav>
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('about') }}">About</a> |
         <a href="{{ url_for('contact') }}">Contact us</a>
       </nav>
     </footer>
