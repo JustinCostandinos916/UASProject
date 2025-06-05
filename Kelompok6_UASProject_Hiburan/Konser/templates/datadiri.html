@@ -7,11 +7,12 @@
   </head>
   <body>
     <h2>Data Diri</h2>
-    <form method="post" action="{{ url_for('pesanprocess') }}">
+    <form method="post" action="{{ url_for('purchase_report') }}" target="_blank">
+      <input type="hidden" name="lokasi_id" value="{{konser_id}}" />
       <table>
         <tr>
           <td>Name</td>
-          <td><input type="text" name="name" required /></td>
+          <td><input type="text" name="nama" required /></td>
         </tr>
         <tr>
           <td>Phone</td>

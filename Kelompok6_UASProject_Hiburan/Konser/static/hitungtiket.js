@@ -3,9 +3,20 @@ const totalharga = document.getElementById("subtotal");
 const jumlahtiket = document.getElementById("ticketCount");
 const totalhargainput = document.getElementById("totalHargaInput");
 const totalhargatiket = document.getElementById("totalTiketInput");
+let hargaPerKategori = {};
 
 selects.forEach((tiket) => {
   tiket.addEventListener("change", totalTiket);
+});
+
+selects.forEach((hrg) => {
+  hrg.addEventListener("change", () => {
+    const harga = Number(hrg.dataset.harga);
+    const kuanti = Number(hrg.value);
+    const id = hrg.id;
+    hargaPerKategori[id] = harga * kuanti;
+    console.log(hargaPerKategori);
+  });
 });
 
 selects.forEach((price) => {
@@ -24,6 +35,7 @@ function totalTiket() {
   totalhargatiket.value = sum;
 }
 
+let hargaperkategori = [];
 function totalHarga() {
   let sum = 0;
   selects.forEach((price) => {
@@ -34,3 +46,5 @@ function totalHarga() {
   totalharga.textContent = sum.toLocaleString();
   totalhargainput.value = sum;
 }
+
+document.getElementById("cat1harga").innerText = `Rp. ${hargaPerKategori.cat1.toLocaleString("id-ID")}`;

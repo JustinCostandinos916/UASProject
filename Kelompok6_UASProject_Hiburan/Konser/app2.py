@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 from config import Config
 from datetime import datetime
+from collections import OrderedDict
 import hashlib
 import os, pdfkit, pymysql
 
@@ -83,22 +84,96 @@ class TiketKonserApp:
 
         @self.app.route('/pesan/')
         def datadiri():
-            return render_template('datadiri.html')
-        
-        @self.app.route('/pesan/process', methods=['POST'])
-        def pesanprocess():
-            if request.method == 'POST':
-                nama = request.form['nama']
-                email = request.form['email']
+            konser_id = session.get('konser_id')
+            return render_template('datadiri.html', konser_id=konser_id)
         
         @self.app.route('/konser<int:konser_id>/process', methods=['POST'])
         def jumlahtiket(konser_id):
             if request.method == 'POST':
-                session["InformasiTiket"] = {
-                    "totaltiket": request.form["total_tiket"],
-                    "totalharga": request.form["total_harga"]
+                session['tmptduduk'] = {
+                    'festival' : int(request.form['festival']),  
+                    'cat2' : int(request.form["cat2"]), 
+                    'cat3' : int(request.form["cat3"]), 
+                    'cat4' : int(request.form["cat4"])
                 }
+                session['totalsemuaharga'] = request.form['total_harga']
+                session['totalsemuatiket'] = request.form['total_tiket']
+                jumlahtiket = []
+                tmptduduk = session['tmptduduk']
+                for i in tmptduduk:
+                    if tmptduduk[i] != 0:
+                        jumlahtiket.append(tmptduduk[i])
+                session['konser_id']=konser_id
                 return redirect(url_for('datadiri'))
+        
+        @self.app.route('/purchase-report', methods=['POST'])
+        def purchase_report():
+            lokasi_id = request.form.get('lokasi_id')
+            if lokasi_id == '1':
+                lokasi = 'Jakarta'
+            elif lokasi_id == 2:
+                lokasi = 'Bandung'
+            elif lokasi_id == 3:
+                lokasi = 'Surabaya'
+            if request.method == 'POST':
+                nama = request.form['nama']
+                email = request.form['email']
+                phone = request.form['phone']
+                tanggal = datetime.now().strftime('%Y-%m-%d')
+                cur = self.con.mysql.cursor()
+                cur.execute('SELECT harga FROM harga_per_kategori WHERE lokasi_id = %s', (lokasi_id,))
+                harga = cur.fetchall()
+                price = []
+                kategori = list(session['tmptduduk'].keys())
+                totaltiket = []
+                kategoridibeli = []
+                hargaperkategori = []
+                key = ['festival', 'cat2', 'cat3', 'cat4']
+                for i in range(len(harga)):
+                    if int(session['tmptduduk'][key[i]]) != 0:
+                        hargaperkategori.append(harga[i][0])
+                        prc = harga[i][0]*int(session['tmptduduk'][key[i]])
+                        if prc != 0:
+                            price.append(prc)
+                a = 0
+                for i in range(len(harga)):
+                    if int(session['tmptduduk'][key[i]]) != 0:
+                        totaltiket.append(int(session['tmptduduk'][key[i]]))
+                        totalharga = price[a]
+                        kategoridibeli.append(key[i])
+                        cur.execute('INSERT INTO booking (nama, email, phone, tanggal, totaltiket, totalharga, kategori, lokasi) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (nama, email, phone, tanggal, totaltiket[a], totalharga, key[a], lokasi))
+                        a += 1
+                self.con.mysql.commit()
+                cur.execute ('SELECT * FROM booking WHERE nama=%s', (nama,))
+                data = cur.fetchone()
+                data_report = {
+                    'nama': nama,
+                    'email': email,
+                    'phone': phone,
+                    'tanggal': tanggal,
+                    'lokasi':lokasi,
+                    'totalsemuaharga' : session['totalsemuaharga'], 
+                    'totalsemuatiket' :session['totalsemuatiket'],
+                    'data' : data
+                }
+                data_tiket = []
+                
+                for i in range(len(price)):
+                    data_tiket.append({
+                        'kategori':kategoridibeli[i],
+                        'totalharga':price[i],
+                        'totaltiket': totaltiket[i],
+                        'hargapertiket' : hargaperkategori[i]
+                    })
+                # return render_template('home.html', b = data_tiket)
+                render = render_template('purchasereport.html', data_report = data_report, data_tiket = data_tiket)
+                base_dir = os.path.abspath(os.path.dirname(__file__))  
+                pdf_path = os.path.join(base_dir, 'purchasereport.pdf')
+                configpdf = pdfkit.configuration(wkhtmltopdf=r'D:\wkhtmltopdf\bin\wkhtmltopdf.exe')
+                pdfkit.from_string(render, pdf_path, configuration=configpdf)
+                return send_file('purchasereport.pdf', as_attachment=False)
+                
+
         # @self.app.route('/pesan/<int:konser_id>/<int:section_id>', methods=['GET', 'POST'])
         # def booking(konser_id, section_id):
         #     if 'user_id' not in session:
