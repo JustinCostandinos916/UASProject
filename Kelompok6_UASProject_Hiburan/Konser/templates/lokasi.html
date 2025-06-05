@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Konser Detail</title>
+  </head>
+  <body>
+    <header>
+      <h1>Greg's <span>Tour</span></h1>
+      <a href="{{ url_for('logout') if session.get('user_id') else url_for('login') }}">
+        {{ 'Logout' if session.get('user_id') else 'Login' }}
+      </a>
+    </header>
+
+    <h1>2025 Greg Tour [Sway & Slay] In Indonesia</h1>
+    <h2>Event Details</h2>
+    <table>
+      <tr>
+  <td>Date</td>
+  <td>: {{ lokasi['tanggal_konser'].strftime('%A, %d %B %Y')|replace('Monday','Senin')|replace('Tuesday','Selasa')|replace('Wednesday','Rabu')|replace('Thursday','Kamis')|replace('Friday','Jumat')|replace('Saturday','Sabtu')|replace('Sunday','Minggu') }}</td>
+</tr>
+
+      </tr>
+      <tr>
+        <td>Time</td>
+        <td>: 14.00 - 20.00</td>
+      </tr>
+      <tr>
+        <td>Location</td>
+        <td>: {{ lokasi_nama }}</td>
+      </tr>
+    </table>
+
+    <h3>Venue Details</h3>
+    <iframe
+      src="{{ lokasi_map }}"
+      width="500"
+      height="200"
+      style="border: 0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+    <h2>Ticket Sales</h2>
+    <div>
+      {% for kategori in kategori %}
+  <fieldset>
+    <h3>{{ kategori.nama_kategori }}</h3>
+    <ul>
+      <li><i>{{ kategori.deskripsi or 'No description available.' }}</i></li>
+      <li><i>Ticket includes government fee (10%) and platform fee (5%)</i></li>
+    </ul>
+  </fieldset>
+  <br>
+{% endfor %}
+
+
+<a href="{{ url_for('booking', lokasi_id=lokasi_id) }}">
+  <button type="button">Lanjut Pemesanan</button>
+</a>
+
+
+    </div>
+
+    <footer>
+      <p>
+        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
+        applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+      </p>
+      <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('about') }}">About</a> |
+        <a href="{{ url_for('contact') }}">Contact us</a>
+      </nav>
+    </footer>
+  </body>
+</html>
