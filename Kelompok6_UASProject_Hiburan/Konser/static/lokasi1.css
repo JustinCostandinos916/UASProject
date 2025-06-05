@@ -6,7 +6,7 @@
 
 body {
   font-family: sans-serif;
-  background: url('bg.jpg') no-repeat center center/cover;
+  background: url("bg.jpg") no-repeat center center/cover;
   color: white;
   min-height: 100vh;
   display: flex;
@@ -17,12 +17,12 @@ body {
 }
 
 .content {
-    flex: 1;
+  flex: 1;
 }
 @keyframes fadeIn {
-    to {
-        opacity: 1;
-    }
+  to {
+    opacity: 1;
+  }
 }
 header {
   display: flex;
@@ -47,7 +47,7 @@ h1 {
 }
 
 footer {
-  background-color: rgba(0,0,50,0.8);
+  background-color: rgba(0, 0, 50, 0.8);
   padding: 10px;
   position: relative;
 }
@@ -72,7 +72,7 @@ footer nav a {
   font-size: 20px;
 }
 
-footer nav a:hover{
+footer nav a:hover {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -80,7 +80,7 @@ footer nav a:hover{
 
 body {
   font-family: sans-serif;
-  background: url('bg.jpg') no-repeat center center/cover;
+  background: url("bg.jpg") no-repeat center center/cover;
   color: white;
   min-height: 100vh;
   display: flex;
@@ -91,12 +91,12 @@ body {
 }
 
 .content {
-    flex: 1;
+  flex: 1;
 }
 @keyframes fadeIn {
-    to {
-        opacity: 1;
-    }
+  to {
+    opacity: 1;
+  }
 }
 header {
   display: flex;
@@ -120,12 +120,8 @@ h1 {
   font-size: 20px;
 }
 
-
-
-
-
 footer {
-  background-color: rgba(0,0,50,0.8);
+  background-color: rgba(0, 0, 50, 0.8);
   padding: 10px;
   position: relative;
 }
@@ -154,9 +150,8 @@ footer nav a:hover {
   text-decoration: underline;
 }
 
-
 .content fieldset {
-   background-color: white;
+  background-color: white;
   color: black;
   padding: 15px;
   border-radius: 10px;
@@ -165,9 +160,8 @@ footer nav a:hover {
   margin: 0 auto;
 }
 
-
 .content table[border="1"] {
-   background-color: white;
+  background-color: white;
   color: black;
   padding: 15px;
   border-radius: 10px;
