@@ -52,7 +52,7 @@
     <h2>Ticket Sales</h2>
     <br />
     <div class="content">
-      <form method="post">
+      <form method="post" action="{{url_for('jumlahtiket', konser_id=2)}}">
         <fieldset>
           <h3>CAT 1</h3>
           <ul>
@@ -63,7 +63,7 @@
             <tr>
               <td><h3>Rp 3.220.000</h3></td>
               <td align="right">
-                <select name="festival" onchange="updateSummary()" id="festival">
+                <select name="festival" onchange="updateSummary()" id="festival" class="kategori" data-harga="3220000">
                   <option value="0" selected>0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -86,7 +86,7 @@
             <tr>
               <td><h3>Rp. 2.702.500</h3></td>
               <td align="right">
-                <select name="cat2" onchange="updateSummary()" id="cat2">
+                <select name="cat2" onchange="updateSummary()" id="cat2" class="kategori" data-harga="2702500">
                   <option value="0" selected>0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -109,7 +109,7 @@
             <tr>
               <td><h3>Rp. 2.242.500</h3></td>
               <td align="right">
-                <select name="cat3" onchange="updateSummary()" id="cat3">
+                <select name="cat3" onchange="updateSummary()" id="cat3" class="kategori" data-harga="2242500">
                   <option value="0" selected>0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -132,7 +132,7 @@
             <tr>
               <td><h3>Rp. 1.552.500</h3></td>
               <td align="right">
-                <select name="cat4" onchange="updateSummary()" id="cat4">
+                <select name="cat4" onchange="updateSummary()" id="cat4" class="kategori" data-harga="1552500">
                   <option value="0" selected>0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -154,9 +154,11 @@
           </tr>
           <tr>
             <td colspan="2" align="center">
-              <button>Order Now</button>
+              <input type="submit" name="pesan" value="Order Now" />
             </td>
           </tr>
+          <input type="hidden" name="total_harga" id="totalHargaInput" value="0" />
+          <input type="hidden" name="total_tiket" id="totalTiketInput" value="0" />
         </table>
       </form>
     </div>
@@ -173,25 +175,6 @@
       </nav>
     </footer>
 
-    <script>
-      function updateSummary() {
-        const festivalCount = parseInt(document.getElementById("festival").value);
-        const cat2Count = parseInt(document.getElementById("cat2").value);
-        const cat3Count = parseInt(document.getElementById("cat3").value);
-        const cat4Count = parseInt(document.getElementById("cat4").value);
-
-        const festivalPrice = 3220000;
-        const cat2Price = 2702500;
-        const cat3Price = 2242500;
-        const cat4Price = 1552500;
-
-        const totalTickets = festivalCount + cat2Count + cat3Count + cat4Count;
-        const subtotal =
-          festivalCount * festivalPrice + cat2Count * cat2Price + cat3Count * cat3Price + cat4Count * cat4Price;
-
-        document.getElementById("ticketCount").innerText = totalTickets;
-        document.getElementById("subtotal").innerText = subtotal.toLocaleString();
-      }
-    </script>
+    <script src="{{ url_for('static', filename='hitungtiket.js')}}" ;></script>
   </body>
 </html>

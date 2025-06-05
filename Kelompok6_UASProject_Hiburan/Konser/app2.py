@@ -111,9 +111,9 @@ class TiketKonserApp:
             lokasi_id = request.form.get('lokasi_id')
             if lokasi_id == '1':
                 lokasi = 'Jakarta'
-            elif lokasi_id == 2:
+            elif lokasi_id == '2':
                 lokasi = 'Bandung'
-            elif lokasi_id == 3:
+            elif lokasi_id == '3':
                 lokasi = 'Surabaya'
             if request.method == 'POST':
                 nama = request.form['nama']
@@ -141,7 +141,7 @@ class TiketKonserApp:
                         totaltiket.append(int(session['tmptduduk'][key[i]]))
                         totalharga = price[a]
                         kategoridibeli.append(key[i])
-                        cur.execute('INSERT INTO booking (nama, email, phone, tanggal, totaltiket, totalharga, kategori, lokasi) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (nama, email, phone, tanggal, totaltiket[a], totalharga, key[a], lokasi))
+                        cur.execute('INSERT INTO booking (nama, email, phone, tanggal, totaltiket, totalharga, kategori, lokasi) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (nama, email, phone, tanggal, totaltiket[a], totalharga, key[i], lokasi))
                         a += 1
                 self.con.mysql.commit()
                 cur.execute ('SELECT * FROM booking WHERE nama=%s', (nama,))
@@ -157,7 +157,6 @@ class TiketKonserApp:
                     'data' : data
                 }
                 data_tiket = []
-                
                 for i in range(len(price)):
                     data_tiket.append({
                         'kategori':kategoridibeli[i],
@@ -165,13 +164,14 @@ class TiketKonserApp:
                         'totaltiket': totaltiket[i],
                         'hargapertiket' : hargaperkategori[i]
                     })
-                # return render_template('home.html', b = data_tiket)
+                
                 render = render_template('purchasereport.html', data_report = data_report, data_tiket = data_tiket)
                 base_dir = os.path.abspath(os.path.dirname(__file__))  
                 pdf_path = os.path.join(base_dir, 'purchasereport.pdf')
                 configpdf = pdfkit.configuration(wkhtmltopdf=r'D:\wkhtmltopdf\bin\wkhtmltopdf.exe')
                 pdfkit.from_string(render, pdf_path, configuration=configpdf)
                 return send_file('purchasereport.pdf', as_attachment=False)
+                # return render_template('home.html', b = session['totalsemuaharga'])
                 
 
         # @self.app.route('/pesan/<int:konser_id>/<int:section_id>', methods=['GET', 'POST'])
