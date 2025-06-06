@@ -1,18 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Admin</title>
+    <title>Laporan Dashboard Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        h1, h2 {
+            color: #222;
+        }
+    </style>
 </head>
 <body>
 
     <h1>Laporan Dashboard Admin</h1>
+    <p><strong>Dicetak pada:</strong> {{ now }}</p>
 
     <h2>Ringkasan Penjualan Tiket</h2>
-    <p><strong>Total Pendapatan:</strong> Rp {{ "{:,.0f}".format(total_pendapatan).replace(',', '.') }}</p>
+    <p><strong>Total Pendapatan:</strong> Rp {{ "{:,.0f}".format(total_pendapatan).replace(",", ".") }}</p>
     <p><strong>Pembelian Hari Ini:</strong> {{ pembelian_hari_ini }} transaksi</p>
 
-    <table border="1" cellspacing="0" cellpadding="5">
+    <table>
         <thead>
             <tr>
                 <th>Kategori Tiket</th>
@@ -30,28 +52,26 @@
     </table>
 
     <h2>Daftar Pengguna</h2>
-    <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>No. HP</th>
-                <th>Role</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.phone }}</td>
-                <td>{{ user.role }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <p style="margin-top: 50px;">Dicetak pada: {{ now }}</p>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>No. HP</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user['id'] }}</td>
+            <td>{{ user['username'] }}</td>
+            <td>{{ user['phone'] }}</td>
+            <td>{{ user['role'] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 </body>
 </html>

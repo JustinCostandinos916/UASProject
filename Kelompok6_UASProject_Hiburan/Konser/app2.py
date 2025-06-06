@@ -23,7 +23,7 @@ class TiketKonserApp:
             role = None
 
             if 'user_id' in session:
-                cur = self.conn.cursor(dictionary=True)
+                cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
                 cur.execute("SELECT username, role FROM user WHERE id = %s", (session['user_id'],))
                 user = cur.fetchone()
                 if user:
@@ -43,34 +43,39 @@ class TiketKonserApp:
             if request.method == 'POST':
                 username = request.form.get('username')
                 password = request.form.get('password')
+
                 cur = self.con.mysql.cursor()
+
                 pw = hashlib.md5(password.encode()).hexdigest()
                 password = pw[:30]
+
                 cur.execute("SELECT * FROM user WHERE username = %s AND password = %s", (username, password))
                 row = cur.fetchone()
-                global user
+
                 if row:
-                    session['user_id'] = row[0]
-                    session['username'] = row[1] 
-                    session['role'] = row[5]
+                    # row: (id, username, password, confirmpw, phone, role)
+                    session['user_id'] = row[0]      # id
+                    session['username'] = row[1]     # username
+                    session['role'] = row[5]         # role
+
+                    print("DEBUG LOGIN:", session)   # bantu debug
 
                     cur.close()
 
-                    if row[5] == 'admin':
-                        flash('Login berhasil sebagai admin.', 'success')
+                    if session['role'] == 'admin':
                         return redirect(url_for('admin_dashboard'))
                     else:
                         return redirect(url_for('home'))
                 else:
+                    flash('Username atau password salah!', 'danger')
                     cur.close()
-                    return redirect(url_for('home'))
-                
-            else:
-                flash('Username atau password salah!', 'danger')
-                cur.close()
-                return redirect(url_for('login'))
+                    return redirect(url_for('login'))
+
+            flash('Akses tidak valid.', 'danger')
+            return redirect(url_for('login'))
+
             
-        @self.app.route('/admin/dashboard')
+        @self.app.route('/admin/dashboard', endpoint='admin_dashboard')
         def admin_dashboard():
             if 'user_id' not in session or session.get('role') != 'admin':
                 flash('Hanya admin yang bisa mengakses dashboard ini.', 'danger')
@@ -91,8 +96,9 @@ class TiketKonserApp:
             pembelian_hari_ini = cur.fetchone()['jumlah']
 
             
-            cur.execute("SELECT username, phone, role FROM user")
+            cur.execute("SELECT id, username, phone, role FROM user")
             users = cur.fetchall()
+
 
             cur.close()
 
@@ -273,6 +279,65 @@ class TiketKonserApp:
                 pdfkit.from_string(render, pdf_path, configuration=configpdf)
                 return send_file('purchasereport.pdf', as_attachment=False)
                 
+        @self.app.route('/admin/export-pdf', endpoint='export_admin_dashboard_pdf')
+        def export_admin_dashboard_pdf():
+            if 'user_id' not in session or session.get('role') != 'admin':
+                flash('Hanya admin yang bisa mencetak laporan.', 'danger')
+                return redirect(url_for('home'))
+
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+
+            
+            cur.execute("SELECT SUM(totalharga) AS total_pendapatan FROM booking")
+            total_pendapatan = cur.fetchone()['total_pendapatan'] or 0
+
+            
+            cur.execute("SELECT kategori AS nama_barang, SUM(totaltiket) AS total FROM booking GROUP BY kategori")
+            penjualan = cur.fetchall()
+
+        
+            cur.execute("SELECT COUNT(*) AS jumlah FROM booking WHERE DATE(tanggal) = CURDATE()")
+            pembelian_hari_ini = cur.fetchone()['jumlah']
+
+            
+            cur.execute("SELECT id, username, phone, role FROM user")
+            users = cur.fetchall()
+
+            cur.close()
+
+            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            rendered = render_template('admin_dashboard_pdf.html',
+                                    total_pendapatan=total_pendapatan,
+                                    pembelian_hari_ini=pembelian_hari_ini,
+                                    penjualan=penjualan,
+                                    users=users,
+                                    now=now_str)
+
+            options = {
+                'enable-local-file-access': '',
+                'quiet': '',
+                'page-size': 'A4',
+                'encoding': 'UTF-8'
+            }
+            configpdf = pdfkit.configuration(wkhtmltopdf=r'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+
+            output_dir = os.path.join(os.getcwd(), 'static', 'pdf')
+            os.makedirs(output_dir, exist_ok=True)
+
+            filename = f"admin_report_{session['user_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            filepath = os.path.join(output_dir, filename)
+
+            try:
+                pdfkit.from_string(rendered, filepath, configuration=configpdf, options=options)
+                flash('Laporan PDF berhasil dibuat.', 'success')
+                return send_file(filepath, as_attachment=False)
+            except Exception as e:
+                import traceback
+                print("ERROR saat buat PDF:")
+                print(traceback.format_exc())
+                flash(f'Gagal membuat PDF: {str(e)}', 'danger')
+                return redirect(url_for('admin_dashboard'))
+
 
         # @self.app.route('/pesan/<int:konser_id>/<int:section_id>', methods=['GET', 'POST'])
         # def booking(konser_id, section_id):
