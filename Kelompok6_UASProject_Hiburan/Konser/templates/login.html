@@ -12,9 +12,9 @@
     </header>
 
     {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
-    messages %}
+    messages %} {% if category == 'danger' %}
     <p class="flash-{{ category }} alertpassword">{{ message }}</p>
-    {% endfor %} {% endif %} {% endwith %}
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
 
     <div class="loginbox">
       <form action="process" method="post">

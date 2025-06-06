@@ -14,6 +14,11 @@
       </header>
     </div>
 
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
+    messages %} {% if category == 'danger' %}
+    <p class="flash-{{ category }} alertpassword">{{ message }}</p>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+
     <br />
     <h1 style="text-align: center">2025 Greg Tour [Sway & Slay] In Indonesia - Jakarta</h1>
     <br />
@@ -51,7 +56,7 @@
     <h2>Ticket Sales</h2>
     <br />
     <div class="content">
-      <form method="post" , action="{{url_for('jumlahtiket', konser_id=1)}}">
+      <form method="post" action="{{url_for('jumlahtiket', konser_id=1)}}">
         <fieldset>
           <h3>CAT 1</h3>
           <ul>
