@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from config import Config
 from datetime import datetime
 from collections import OrderedDict
+from werkzeug.security import generate_password_hash
 import hashlib
 import os, pdfkit, pymysql
 
@@ -14,11 +15,24 @@ class TiketKonserApp:
         self.app.secret_key = "konser_secret_123"
         self.con = Config()
         self.routes()
-
+    
     def routes(self):
         @self.app.route('/Home')
         def home():
-            return render_template("home.html", a=user)
+            username = None
+            role = None
+
+            if 'user_id' in session:
+                cur = self.conn.cursor(dictionary=True)
+                cur.execute("SELECT username, role FROM user WHERE id = %s", (session['user_id'],))
+                user = cur.fetchone()
+                if user:
+                    username = user['username']
+                    role = user['role']
+                cur.close()
+
+            return render_template("home.html", username=username, role=role)
+
 
         @self.app.route('/login/')
         def login():
@@ -36,14 +50,100 @@ class TiketKonserApp:
                 row = cur.fetchone()
                 global user
                 if row:
-                    user = row[0]
+                    session['user_id'] = row[0]
+                    session['username'] = row[1] 
+                    session['role'] = row[5]
+
+                    cur.close()
+
+                    if row[5] == 'admin':
+                        flash('Login berhasil sebagai admin.', 'success')
+                        return redirect(url_for('admin_dashboard'))
+                    else:
+                        return redirect(url_for('home'))
+                else:
                     cur.close()
                     return redirect(url_for('home'))
-                else:
-                    flash('Username atau password salah!', 'danger')
-                    cur.close()
-                    return redirect(url_for('login'))
+                
+            else:
+                flash('Username atau password salah!', 'danger')
+                cur.close()
+                return redirect(url_for('login'))
+            
+        @self.app.route('/admin/dashboard')
+        def admin_dashboard():
+            if 'user_id' not in session or session.get('role') != 'admin':
+                flash('Hanya admin yang bisa mengakses dashboard ini.', 'danger')
+                return redirect(url_for('home'))
+
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+
+            
+            cur.execute("SELECT SUM(totalharga) AS total_pendapatan FROM booking")
+            total_pendapatan = cur.fetchone()['total_pendapatan'] or 0
+
+            
+            cur.execute("SELECT kategori AS nama_barang, SUM(totaltiket) AS total FROM booking GROUP BY kategori")
+            penjualan = cur.fetchall()
+
+            
+            cur.execute("SELECT COUNT(*) AS jumlah FROM booking WHERE DATE(tanggal) = CURDATE()")
+            pembelian_hari_ini = cur.fetchone()['jumlah']
+
+            
+            cur.execute("SELECT username, phone, role FROM user")
+            users = cur.fetchall()
+
+            cur.close()
+
+            return render_template('admin_dashboard.html',
+                                total_pendapatan=total_pendapatan,
+                                pembelian_hari_ini=pembelian_hari_ini,
+                                penjualan=penjualan,
+                                users=users)
+
+
+        @self.app.route('/admin/users/reset/<int:id>')
+        def reset_password(id):
+            default_pw = generate_password_hash("password123")
+            
+            cur = self.con.mysql.cursor()
+            
+            cur.execute("""
+                UPDATE user 
+                SET password = %s, confirmpw = %s 
+                WHERE id = %s
+            """, (default_pw, default_pw, id))
+            
+            self.con.mysql.commit()
+            cur.close()
+
+            flash("Password berhasil di-reset ke 'password123'.", "info")
+            return redirect(url_for('admin_dashboard'))
         
+        @self.app.route('/admin/users/delete/<int:id>')
+        def delete_user(id):
+            cur = self.con.mysql.cursor()
+
+            cur.execute("SELECT username, phone FROM user WHERE id = %s", (id,))
+            user_data = cur.fetchone()
+
+            if user_data:
+                username, phone = user_data
+
+                
+                cur.execute("DELETE FROM booking WHERE nama = %s AND phone = %s", (username, str(phone)))
+
+                cur.execute("DELETE FROM user WHERE id = %s", (id,))
+
+                self.con.mysql.commit()
+                flash("User dan data pemesanannya berhasil dihapus.", "info")
+            else:
+                flash("User tidak ditemukan.", "warning")
+
+            cur.close()
+            return redirect(url_for('admin_dashboard'))
+
         @self.app.route('/register/')
         def register():
             return render_template('register.html')

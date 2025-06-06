@@ -7,9 +7,8 @@
 
     <p><a href="{{ url_for('export_admin_dashboard_pdf') }}" target="_blank">Cetak Laporan PDF</a></p>
 
-    <h1>Dashboard Admin Gabungan</h1>
+    <h1>Dashboard Admin</h1>
 
-   
     <h2>Ringkasan Penjualan Tiket</h2>
     <p><strong>Total Pendapatan:</strong> Rp {{ "{:,.0f}".format(total_pendapatan) }}</p>
     <p><strong>Pembelian Hari Ini:</strong> {{ pembelian_hari_ini }} transaksi</p>
@@ -26,24 +25,19 @@
         {% endfor %}
     </table>
 
-    
     <h2>Manajemen Pengguna</h2>
     <table border="1">
         <tr>
-            <th>ID</th>
             <th>Username</th>
-            <th>Email</th>
+            <th>No. HP</th>
             <th>Role</th>
-            <th>Tanggal Daftar</th>
             <th>Aksi</th>
         </tr>
         {% for user in users %}
         <tr>
-            <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
-            <td>{{ user.email or '-' }}</td>
+            <td>{{ user.phone }}</td>
             <td>{{ user.role }}</td>
-            <td>{{ user.created_at }}</td>
             <td>
                 <a href="{{ url_for('reset_password', id=user.id) }}">Reset PW</a> |
                 <a href="{{ url_for('delete_user', id=user.id) }}" onclick="return confirm('Hapus user ini?')">Hapus</a>
