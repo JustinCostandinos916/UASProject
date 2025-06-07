@@ -6,9 +6,6 @@ from werkzeug.security import generate_password_hash
 import hashlib
 import os, pdfkit, pymysql
 
-user = None
-if user is None:
-    user = 'Login'
 class TiketKonserApp:    
     def __init__(self):
         self.app = Flask(__name__)
