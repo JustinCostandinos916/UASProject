@@ -21,7 +21,7 @@ class TiketKonserApp:
             else:
                 return render_template("home.html", username='Login', role=None)
                 
-        @self.app.route('/login/')
+        @self.app.route('/login')
         def login():
             return render_template('login.html')
         
@@ -118,7 +118,7 @@ class TiketKonserApp:
             cur.close()
             return redirect(url_for('admin_dashboard'))
 
-        @self.app.route('/register/')
+        @self.app.route('/register')
         def register():
             return render_template('register.html')
         
@@ -154,13 +154,13 @@ class TiketKonserApp:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
                 
-        @self.app.route('/konser<int:konser_id>/')
+        @self.app.route('/konser<int:konser_id>')
         def konser_detail(konser_id):
             if not 'user_id' in session:
                 flash('Silakan login terlebih dahulu.', 'danger')
                 return redirect(url_for('login'))
             else:
-                return render_template(f'lokasi{konser_id}.html')
+                return render_template(f'lokasi{konser_id}.html', username=session['username'])
 
         @self.app.route('/pesan/')
         def datadiri():
@@ -205,7 +205,7 @@ class TiketKonserApp:
                 nama = request.form['nama']
                 email = request.form['email']
                 phone = request.form['phone']
-                tanggal = datetime.now().strftime('%Y-%m-%d')
+                tanggal = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
                 cur = self.con.mysql.cursor()
                 cur.execute('SELECT harga FROM harga_per_kategori WHERE lokasi_id = %s', (lokasi_id,))
                 harga = cur.fetchall()
@@ -304,7 +304,7 @@ class TiketKonserApp:
             output_dir = os.path.join(base_dir, 'static', 'pdf')
             os.makedirs(output_dir, exist_ok=True)
 
-            filename = f"admin_report_{session['user_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            filename = f"admin_report_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.pdf"
             filepath = os.path.join(output_dir, filename)
 
             try:
@@ -322,16 +322,22 @@ class TiketKonserApp:
         def logout():
             session.clear()
             flash('Logout berhasil.', 'info')
-            return redirect(url_for('home'))
+            return redirect(url_for('login'))
             # return render_template('home.html', b=logout)
 
         @self.app.route('/about')
         def about():
-            return render_template('about.html', a=user)
+            if 'user_id' in session:
+                return render_template("about.html", username=session['username'], role=session['role'])
+            else:
+                return render_template("about.html", username='Login', role=None)
 
-        @self.app.route('/contact')
+        @self.app.route('/contactus')
         def contact():
-            return render_template('contactus.html')
+            if 'user_id' in session:
+                return render_template("contactus.html", username=session['username'], role=session['role'])
+            else:
+                return render_template("contactus.html", username='Login', role=None)
 
     def run(self):
         self.app.run(debug=True, port=5000)

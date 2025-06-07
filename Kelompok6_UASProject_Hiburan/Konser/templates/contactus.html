@@ -5,13 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{url_for('static',filename='contactus.css')}}" />
     <title>Contact Us</title>
+    <style>
+      .logout-content {
+        display: none;
+      }
+
+      .dropdown:hover .logout-content {
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <header>
       <a class="Gregtour" href="{{url_for('home')}}"
         ><h1>Greg's<span class="pink">Tour</span></h1></a
       >
-      <a href="{{ url_for('login') }}" class="login-btn">{{a}}</a>
+      <div class="dropdown">
+        <a href="{{ url_for('login') }}" class="login-btn">{{username}}</a>
+        {% if username != 'Login' %}
+        <div class="logout-content">
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+      {% endif %}
     </header>
 
     <p align="justify">
