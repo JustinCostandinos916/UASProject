@@ -61,28 +61,16 @@ class TiketKonserApp:
             if 'user_id' not in session or session.get('role') != 'admin':
                 flash('Hanya admin yang bisa mengakses dashboard ini.', 'danger')
                 return redirect(url_for('home'))
-
             cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
-
-            
             cur.execute("SELECT SUM(totalharga) AS total_pendapatan FROM booking")
             total_pendapatan = cur.fetchone()['total_pendapatan'] or 0
-
-            
             cur.execute("SELECT kategori AS nama_barang, SUM(totaltiket) AS total FROM booking GROUP BY kategori")
             penjualan = cur.fetchall()
-
-            
             cur.execute("SELECT COUNT(*) AS jumlah FROM booking WHERE DATE(tanggal) = CURDATE()")
             pembelian_hari_ini = cur.fetchone()['jumlah']
-
-            
-            cur.execute("SELECT id, username, phone, role FROM user")
+            cur.execute("SELECT id, username, email, phone, role FROM user")
             users = cur.fetchall()
-
-
             cur.close()
-
             return render_template('admin_dashboard.html',
                                 total_pendapatan=total_pendapatan,
                                 pembelian_hari_ini=pembelian_hari_ini,
@@ -312,8 +300,8 @@ class TiketKonserApp:
                 'encoding': 'UTF-8'
             }
             configpdf = pdfkit.configuration(wkhtmltopdf=r'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-
-            output_dir = os.path.join(os.getcwd(), 'static', 'pdf')
+            base_dir = os.path.abspath(os.path.dirname(__file__))
+            output_dir = os.path.join(base_dir, 'static', 'pdf')
             os.makedirs(output_dir, exist_ok=True)
 
             filename = f"admin_report_{session['user_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
