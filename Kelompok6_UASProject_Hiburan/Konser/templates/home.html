@@ -1,69 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
-    <title>Home</title>
-    <style>
-      .logout-content {
-        display: none;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+  <title>Home - Greg Tour</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
 
-      .dropdown:hover .logout-content {
-        display: block;
-      }
-    </style>
-  </head>
-  <body>
-    <p>{{b}}</p>
-    <header>
-      <a class="Gregtour" href="{{url_for('home')}}"
-        ><h1>Greg's<span class="pink">Tour</span></h1></a
-      >
-      <div class="dropdown">
-        <a href="{{ url_for('login') }}" class="login-btn">{{username}}</a>
-        {% if username != 'Login' %}
-        <div class="logout-content">
-          <a href="/logout">Logout</a>
-        </div>
+  <header>
+    <a class="Gregtour" href="{{ url_for('home') }}">
+      <h1>Greg's<span class="pink">Tour</span></h1>
+    </a>
+    <div class="profile-dropdown">
+      <button class="profile-btn">
+        {{ username }}
+        <span class="arrow">▼</span>
+      </button>
+      {% if username != 'Login' %}
+      <div class="dropdown-content">
+        <a href="/logout">Logout</a>
       </div>
       {% endif %}
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <div class="card-container">
-        <a href="{{ url_for('konser_detail', konser_id=1) }}">
-          <div class="tour-card">
-            <img src="{{ url_for('static', filename='jakarta.jpg') }}" alt="Jakarta" />
+  <main>
+    <section class="hero">
+      <h1 class="hero-title">2025 Greg Tour <span class="highlight">[Sway & Slay]</span> In Indonesia</h1>
+      <h2 class="hero-subtitle">Advance Sale Happening Now</h2>
+    </section>
+
+    <div class="card-container">
+      <a href="{{ url_for('konser_detail', konser_id=1) }}" class="tour-card-link">
+        <div class="tour-card">
+          <img src="{{ url_for('static', filename='jakarta.jpg') }}" alt="Jakarta" />
+          <div class="card-overlay">
+            <div class="overlay-text">
+              <span class="order-btn">Order Now</span>
+              <span class="location-name">Jakarta</span>
+            </div>
           </div>
-        </a>
+        </div>
+      </a>
 
-        <a href="{{ url_for('konser_detail', konser_id=2) }}">
-          <div class="tour-card">
-            <img src="{{ url_for('static', filename='bandung.jpg') }}" alt="Bandung" />
+      <a href="{{ url_for('konser_detail', konser_id=2) }}" class="tour-card-link">
+        <div class="tour-card">
+          <img src="{{ url_for('static', filename='bandung.jpg') }}" alt="Bandung" />
+          <div class="card-overlay">
+            <div class="overlay-text">
+              <span class="order-btn">Order Now</span>
+              <span class="location-name">Bandung</span>
+            </div>
           </div>
-        </a>
+        </div>
+      </a>
 
-        <a href="{{ url_for('konser_detail', konser_id=3) }}">
-          <div class="tour-card">
-            <img src="{{ url_for('static', filename='surabaya.jpg') }}" alt="Surabaya" />
+      <a href="{{ url_for('konser_detail', konser_id=3) }}" class="tour-card-link">
+        <div class="tour-card">
+          <img src="{{ url_for('static', filename='surabaya.jpg') }}" alt="Surabaya" />
+          <div class="card-overlay">
+            <div class="overlay-text">
+              <span class="order-btn">Order Now</span>
+              <span class="location-name">Surabaya</span>
+            </div>
           </div>
-        </a>
-      </div>
-      <p class="desc">This concert will take place in several places!</p>
-    </main>
+        </div>
+      </a>
+    </div>
 
-    <footer>
-      <p class="terms">
-        By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all
-        applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
-      </p>
-      <nav>
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('about') }}">About</a>
-        <a href="{{ url_for('contact') }}">Contact us</a>
-      </nav>
-    </footer>
-  </body>
+    <p class="desc">
+      Secure your spot early for the musical experience across Jakarta, Bandung & Surabaya. Let’s sway, let’s slay!
+    </p>
+  </main>
+
+  <footer>
+    <p class="terms">
+      By purchasing a ticket for 2025 Greg Tour [Sway & Slay] In Indonesia, the Event Attendee has agreed to all applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
+    </p>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact us</a>
+    </nav>
+  </footer>
+
+</body>
 </html>

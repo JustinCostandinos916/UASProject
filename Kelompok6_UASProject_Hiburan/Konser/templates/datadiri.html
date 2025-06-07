@@ -3,32 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>data diri</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='datadiri.css') }}" />
+    <title>Data Diri</title>
   </head>
   <body>
-    <h2>Data Diri</h2>
-    <form method="post" action="{{ url_for('purchase_report') }}" target="_blank">
-      <input type="hidden" name="lokasi_id" value="{{konser_id}}" />
-      <table>
-        <tr>
-          <td>Name</td>
-          <td><input type="text" name="nama" required /></td>
-        </tr>
-        <tr>
-          <td>Phone</td>
-          <td><input type="text" name="phone" required /></td>
-        </tr>
-        <tr>
-          <td>Email</td>
-          <td><input type="email" name="email" required /></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>
-            <input type="submit" name="action" value="Invoice" />
-          </td>
-        </tr>
-      </table>
-    </form>
+    <div class="container">
+      <h2>Data Diri</h2>
+      <form method="post" action="{{ url_for('purchase_report') }}" target="_blank" class="form-box">
+        <input type="hidden" name="lokasi_id" value="{{konser_id}}" />
+        <label>Name</label>
+        <input type="text" name="nama" required />
+        <label>Phone</label>
+        <input type="text" name="phone" required />
+        <label>Email</label>
+        <input type="email" name="email" required />
+        <input type="submit" name="action" value="Invoice" class="btn-submit" />
+      </form>
+    </div>
   </body>
 </html>
