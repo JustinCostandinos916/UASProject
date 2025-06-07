@@ -19,21 +19,11 @@ class TiketKonserApp:
     def routes(self):
         @self.app.route('/Home')
         def home():
-            username = None
-            role = None
-
             if 'user_id' in session:
-                cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
-                cur.execute("SELECT username, role FROM user WHERE id = %s", (session['user_id'],))
-                user = cur.fetchone()
-                if user:
-                    username = user['username']
-                    role = user['role']
-                cur.close()
-
-            return render_template("home.html", username=username, role=role)
-
-
+                return render_template("home.html", username=session['username'], role=session['role'])
+            else:
+                return render_template("home.html", username='Login', role=None)
+                
         @self.app.route('/login/')
         def login():
             return render_template('login.html')
@@ -43,25 +33,20 @@ class TiketKonserApp:
             if request.method == 'POST':
                 username = request.form.get('username')
                 password = request.form.get('password')
-
                 cur = self.con.mysql.cursor()
-
                 pw = hashlib.md5(password.encode()).hexdigest()
                 password = pw[:30]
-
-                cur.execute("SELECT * FROM user WHERE username = %s AND password = %s", (username, password))
+                cur.execute("SELECT * FROM user WHERE (username = %s OR email = %s OR phone = %s) AND password = %s", (username, username, username, password))
                 row = cur.fetchone()
-
                 if row:
                     # row: (id, username, password, confirmpw, phone, role)
                     session['user_id'] = row[0]      # id
                     session['username'] = row[1]     # username
-                    session['role'] = row[5]         # role
+                    session['role'] = row[6]         # role
 
                     print("DEBUG LOGIN:", session)   # bantu debug
 
                     cur.close()
-
                     if session['role'] == 'admin':
                         return redirect(url_for('admin_dashboard'))
                     else:
@@ -70,7 +55,6 @@ class TiketKonserApp:
                     flash('Username atau password salah!', 'danger')
                     cur.close()
                     return redirect(url_for('login'))
-
             flash('Akses tidak valid.', 'danger')
             return redirect(url_for('login'))
 
@@ -107,7 +91,6 @@ class TiketKonserApp:
                                 pembelian_hari_ini=pembelian_hari_ini,
                                 penjualan=penjualan,
                                 users=users)
-
 
         @self.app.route('/admin/users/reset/<int:id>')
         def reset_password(id):
@@ -158,15 +141,21 @@ class TiketKonserApp:
         def registerprocess():
             if request.method == 'POST':
                 username = request.form['username']
+                email = request.form['email']
                 password = request.form['password']
                 confirmpw = request.form["confirmpw"]
                 phone = request.form["phone"]
+                role = 'user'
                 cur = self.con.mysql.cursor()
-                if password == confirmpw:
+                cur.execute('SELECT username FROM user WHERE username = %s', (username,))
+                if cur.fetchone():
+                    session['warning'] = 'Username Sudah Dipakai!'
+                    return redirect(url_for('register'))
+                elif password == confirmpw:
                     try:
                         cur.execute(
-                            'INSERT INTO user (username, password, confirmpw, phone) VALUES (%s, md5(%s), md5(%s), %s)',
-                            (username, password, confirmpw, phone)
+                            'INSERT INTO user (username, email, password, confirmpw, phone, role) VALUES (%s, %s, md5(%s), md5(%s), %s, %s)',
+                            (username, email, password, confirmpw, phone, role)
                         )
                         self.con.mysql.commit()
                         cur.close()
@@ -179,10 +168,10 @@ class TiketKonserApp:
                 else:
                     flash('Konfirmasi password salah!', 'danger')
                     return redirect(url_for('register'))
-        
+                
         @self.app.route('/konser<int:konser_id>/')
         def konser_detail(konser_id):
-            if user == 'Login':
+            if not 'user_id' in session:
                 flash('Silakan login terlebih dahulu.', 'danger')
                 return redirect(url_for('login'))
             else:
@@ -344,109 +333,12 @@ class TiketKonserApp:
                 flash(f'Gagal membuat PDF: {str(e)}', 'danger')
                 return redirect(url_for('admin_dashboard'))
 
-
-        # @self.app.route('/pesan/<int:konser_id>/<int:section_id>', methods=['GET', 'POST'])
-        # def booking(konser_id, section_id):
-        #     if 'user_id' not in session:
-        #         flash('Silakan login terlebih dahulu.', 'warning')
-        #         return redirect(url_for('home'))
-
-        #     if request.method == 'POST':
-        #         nama = request.form['nama']
-        #         hp = request.form['hp']
-        #         email = request.form['email']
-        #         tanggal = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        #         action = request.form.get('action')
-
-        #         cur = self.con.mysql.cursor(dictionary=True)
-        #         cur.execute("SELECT quota, sold FROM section WHERE id = %s", (section_id,))
-        #         section = cur.fetchone()
-
-        #         festival = int(request.form.get('festival', 0))
-        #         cat2 = int(request.form.get('cat2', 0))
-        #         cat3 = int(request.form.get('cat3', 0))
-        #         cat4 = int(request.form.get('cat4', 0))
-        #         total_tiket = festival + cat2 + cat3 + cat4
-
-        #         if total_tiket == 0:
-        #             flash('Jumlah tiket tidak boleh kurang dari 1!', 'danger')
-        #             cur.close()
-        #             return redirect(url_for('konser_detail', konser_id=konser_id))
-
-        #         if section['sold'] + total_tiket > section['quota']:
-        #             flash('Section sudah penuh!', 'danger')
-        #             cur.close()
-        #             return redirect(url_for('konser_detail', konser_id=konser_id))
-
-        #         harga_festival = 3220000
-        #         harga_cat2 = 2702500
-        #         harga_cat3 = 2242500
-        #         harga_cat4 = 1552500
-
-        #         if festival > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, festival, harga_festival)
-        #             )
-        #         if cat2 > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat2, harga_cat2)
-        #             )
-        #         if cat3 > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat3, harga_cat3)
-        #             )
-        #         if cat4 > 0:
-        #             cur.execute(
-        #                 "INSERT INTO tiket (user_id, konser_id, section_id, nama, hp, email, tanggal, jumlah, harga) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        #                 (session['user_id'], konser_id, section_id, nama, hp, email, tanggal, cat4, harga_cat4)
-        #             )
-
-        #         cur.execute("UPDATE section SET sold = sold + %s WHERE id = %s", (total_tiket, section_id))
-        #         self.con.mysql.commit()
-        #         cur.close()
-
-        #         session['tiket_data'] = {
-        #             'festival': {'jumlah': festival, 'harga': harga_festival},
-        #             'cat2': {'jumlah': cat2, 'harga': harga_cat2},
-        #             'cat3': {'jumlah': cat3, 'harga': harga_cat3},
-        #             'cat4': {'jumlah': cat4, 'harga': harga_cat4}
-        #         }
-
-        #         if action == 'Invoice':
-        #             return redirect(url_for('pdf'))
-
-        #         flash("See you on the concert!", "success")
-        #         return redirect(url_for('home'))
-
-        #     return render_template('datadiri.html', konser_id=konser_id, section_id=section_id)
-
-        # @self.app.route('/purchase-report')
-        # def pdf():
-        #     tiket_data = session.get('tiket_data', {})
-        #     total_harga = sum(info['jumlah'] * info['harga'] for info in tiket_data.values())
-        #     jumlah_tiket = sum(info['jumlah'] for info in tiket_data.values())
-
-        #     rendered = render_template(
-        #         'purchasereport.html',
-        #         data=tiket_data,
-        #         total_harga=total_harga,
-        #         jumlah_tiket=jumlah_tiket
-        #     )
-        #     configpdf = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-        #     filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-        #     filepath = f"uasproject/static/pdf/{filename}"
-        #     pdfkit.from_string(rendered, filepath, configuration=configpdf)
-        #     flash('Success Download Invoice', 'success')
-        #     return redirect(url_for('home'))
-
         @self.app.route('/logout')
         def logout():
             session.clear()
             flash('Logout berhasil.', 'info')
             return redirect(url_for('home'))
+            # return render_template('home.html', b=logout)
 
         @self.app.route('/about')
         def about():

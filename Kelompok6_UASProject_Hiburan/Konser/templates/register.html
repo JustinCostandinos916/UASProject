@@ -20,7 +20,10 @@
       <form method="post" action="process">
         <table>
           <tr>
-            <td><input type="text" name="username" placeholder="Username" required /></td>
+            {% if session.get('warning') %}
+            <p>{{ session['warning'] }}</p>
+            {% set _ = session.pop('warning') %} {% endif %}
+            <td><input type="text" name="username" id="username" placeholder="Username" required /></td>
           </tr>
           <tr>
             <td><input type="password" name="password" placeholder="Password" required /></td>
@@ -74,5 +77,19 @@
         <a href="contactus.html">Contact us</a>
       </nav>
     </footer>
+    <script>
+      const username = document.getElementById("username");
+
+      username.addEventListener("invalid", function (event) {
+        event.target.setCustomValidity("");
+        if (!event.target.validity.valid) {
+          event.target.setCustomValidity("Bagian ini tidak boleh kosong!");
+        }
+      });
+
+      username.addEventListener("input", function (event) {
+        event.target.setCustomValidity("");
+      });
+    </script>
   </body>
 </html>
