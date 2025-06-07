@@ -5,14 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename='lokasi1.css') }}" />
     <title>Jakarta</title>
+    <style>
+      .logout-content {
+        display: none;
+      }
+
+      .dropdown:hover .logout-content {
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <div class="heads">
       <header>
         <h1>Greg's <span class="pink">Tour</span></h1>
-        <a href="login.html" class="login-btn">Login</a>
+        <div class="dropdown">
+          <a href="{{ url_for('login') }}" class="login-btn">{{username}}</a>
+          {% if username != 'Login' %}
+          <div class="logout-content">
+            <a href="/logout">Logout</a>
+          </div>
+        </div>
+        {% endif %}
       </header>
     </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
+    messages %} {% if category == 'danger' %}
+    <p class="flash-{{ category }} alertpassword">{{ message }}</p>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
 
     <br />
     <h1 style="text-align: center">2025 Greg Tour [Sway & Slay] In Indonesia - Jakarta</h1>
@@ -51,7 +72,7 @@
     <h2>Ticket Sales</h2>
     <br />
     <div class="content">
-      <form method="post" , action="{{url_for('jumlahtiket', konser_id=1)}}">
+      <form method="post" action="{{url_for('jumlahtiket', konser_id=1)}}">
         <fieldset>
           <h3>CAT 1</h3>
           <ul>
@@ -168,9 +189,9 @@
         applicable Terms and Conditions. All forms of violation of the terms and conditions will be dealt with strictly.
       </p>
       <nav>
-        <a href="home.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="contactus.html" id="contact">Contact us</a>
+        <a href="{{url_for('home')}}">Home</a>
+        <a href="{{url_for('about')}}">About</a>
+        <a href="{{url_for('contact')}}">Contact us</a>
       </nav>
     </footer>
 

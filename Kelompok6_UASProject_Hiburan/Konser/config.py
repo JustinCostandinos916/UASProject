@@ -6,5 +6,5 @@ class Config:
             host='localhost',
             user='root',
             password='',
-            database='tiketkonser2'
+            database='tiketkonser3'
         )
