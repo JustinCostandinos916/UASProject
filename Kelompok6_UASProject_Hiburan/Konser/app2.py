@@ -165,7 +165,10 @@ class TiketKonserApp:
 
         @self.app.route('/pesan/')
         def datadiri():
+            if not 'pesan' in session:
+                return 'Not Allowed'
             konser_id = session.get('konser_id')
+            session.pop('pesan', None)
             return render_template('datadiri.html', konser_id=konser_id)
         
         @self.app.route('/konser<int:konser_id>/process', methods=['GET','POST'])
@@ -186,6 +189,7 @@ class TiketKonserApp:
                         if tmptduduk[i] != 0:
                             jumlahtiket.append(tmptduduk[i])
                     session['konser_id']=konser_id
+                    session['pesan'] = True
                     return redirect(url_for('datadiri'))
                 else:
                     flash('Anda Belum Memilih Jumlah Tiket!', 'danger')
