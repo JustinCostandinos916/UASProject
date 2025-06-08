@@ -281,7 +281,7 @@ class TiketKonserApp:
             pembelian_hari_ini = cur.fetchone()['jumlah']
 
             
-            cur.execute("SELECT id, username, phone, role FROM user")
+            cur.execute("SELECT id, username, email, phone, role FROM user")
             users = cur.fetchall()
 
             cur.close()
