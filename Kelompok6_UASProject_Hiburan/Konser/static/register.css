@@ -1,4 +1,4 @@
-\* {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -19,73 +19,92 @@ body {
 
 header {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
   margin-bottom: 2rem;
 }
 header h1 {
-  font-size: 3.5rem;
-  color: white;
-  text-align: center;
+  font-size: 3rem;
 }
 header .pink {
   color: #f72585;
 }
+
 .regisbox {
   background-color: #161616;
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-  padding: 3rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
   width: 100%;
-  max-width: 500px;
-  animation: fadeInUp 1s ease forwards;
+  max-width: 380px;
+  animation: fadeInUp 0.8s ease-out;
 }
-.regisbox table {
-  width: 100%;
+
+form {
+  display: flex;
+  flex-direction: column;
 }
+
 .regisbox input[type="text"],
 .regisbox input[type="password"],
 .regisbox input[type="tel"],
 .regisbox input[type="email"] {
   width: 100%;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid #555;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #444;
   border-radius: 10px;
   background-color: #222;
   color: white;
   font-size: 1rem;
   transition: border-color 0.3s ease;
 }
+
 .regisbox input:focus {
   border-color: #f72585;
   outline: none;
 }
+
 .button-group {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap: 1rem;
   margin-top: 1rem;
 }
+
 .regisbox input[type="submit"],
 .regisbox input[type="reset"] {
-  padding: 0.8rem 1.2rem;
+  flex: 1;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.regisbox input[type="submit"] {
   background-color: #f72585;
   color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
+
 .regisbox input[type="reset"] {
   background-color: #444;
+  color: white;
 }
-.regisbox input[type="submit"]:hover,
-.regisbox input[type="reset"]:hover {
+
+.regisbox input[type="submit"]:hover {
   background-color: #cc1e70;
 }
+.regisbox input[type="reset"]:hover {
+  background-color: #666;
+}
+
+.regisbox p {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-top: 1.5rem;
+}
+
 #log {
   color: #f72585;
   text-decoration: none;
@@ -94,17 +113,15 @@ header .pink {
 #log:hover {
   text-decoration: underline;
 }
-.regisbox p {
-  text-align: center;
-  margin-top: 3rem;
-  font-size: 0.95rem;
-}
+
 footer {
   margin-top: 3rem;
   text-align: center;
   font-size: 0.9rem;
   color: #bbb;
+  padding: 0 1rem;
 }
+
 footer nav {
   display: flex;
   justify-content: center;
@@ -120,25 +137,51 @@ footer nav a {
 footer nav a:hover {
   text-decoration: underline;
 }
-.contact-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+
+/* Flash message warning */
+.alertpassword {
+  background-color: #f72585;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
 }
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-.tooltip-arrow {
-  display: none;
-}
+
 @keyframes fadeInUp {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(30px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 2.2rem;
+  }
+
+  .regisbox {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .regisbox p {
+    font-size: 0.85rem;
+  }
+
+  footer nav {
+    flex-direction: column;
+    gap: 1rem;
   }
 }

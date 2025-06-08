@@ -35,9 +35,9 @@ header .pink {
   background-color: #161616;
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-  padding: 3rem;
+  padding: 2rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 380px;
   animation: fadeInUp 1s ease forwards;
 }
 .loginbox table {
@@ -46,7 +46,7 @@ header .pink {
 .loginbox input[type="text"],
 .loginbox input[type="password"] {
   width: 100%;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   margin-bottom: 1.5rem;
   border: 1px solid #555;
   border-radius: 10px;
@@ -152,5 +152,29 @@ footer nav a:hover {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 2.2rem;
+  }
+
+  .loginbox {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  #dont {
+    font-size: 0.85rem;
+  }
+
+  footer nav {
+    flex-direction: column;
+    gap: 0.8rem;
   }
 }
