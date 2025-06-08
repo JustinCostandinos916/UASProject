@@ -343,6 +343,28 @@ class TiketKonserApp:
                 return render_template("contactus.html", username=session['username'], role=session['role'])
             else:
                 return render_template("contactus.html", username='Login', role=None)
+        
+        @self.app.route('/change-password')
+        def change_password():
+            return render_template('changepassword.html')
+
+        @self.app.route('/change-password/process', methods=['POST'])
+        def change_password_process():
+            username = request.form.get('username')
+            old_password = request.form.get('oldpassword')
+            new_password = request.form.get('newpassword')
+            pw = hashlib.md5(old_password.encode()).hexdigest()
+            password = pw[:30]
+            cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
+            cur.execute('SELECT password FROM user WHERE (username = %s OR email = %s OR phone = %s) AND password = %s', (username, username, username, password))
+            select = cur.fetchone()
+            # return render_template('home.html', b=password)
+            if select:
+                cur.execute("UPDATE user SET password = md5(%s) WHERE (username = %s OR email = %s OR phone = %s) AND password = %s", (new_password, username, username, username, password))
+                return redirect(url_for('login'))
+            else:
+                flash('Username atau Password Salah!')
+                return redirect(url_for('change_password'))
 
     def run(self):
         self.app.run(debug=True, port=5000)
