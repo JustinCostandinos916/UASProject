@@ -39,7 +39,7 @@ class TiketKonserApp:
                     # row: (id, username, password, confirmpw, phone, role)
                     session['user_id'] = row[0]      # id
                     session['username'] = row[1]     # username
-                    session['role'] = row[6]         # role
+                    session['role'] = row[5]         # role
 
                     print("DEBUG LOGIN:", session)   # bantu debug
 
@@ -79,15 +79,16 @@ class TiketKonserApp:
 
         @self.app.route('/admin/users/reset/<int:id>')
         def reset_password(id):
-            default_pw = generate_password_hash("password123")
+            password = 'password123'
+            pw = hashlib.md5(password.encode()).hexdigest()
             
             cur = self.con.mysql.cursor()
             
             cur.execute("""
                 UPDATE user 
-                SET password = %s, confirmpw = %s 
+                SET password = %s  
                 WHERE id = %s
-            """, (default_pw, default_pw, id))
+            """, (pw, id))
             
             self.con.mysql.commit()
             cur.close()
@@ -139,8 +140,8 @@ class TiketKonserApp:
                 elif password == confirmpw:
                     try:
                         cur.execute(
-                            'INSERT INTO user (username, email, password, confirmpw, phone, role) VALUES (%s, %s, md5(%s), md5(%s), %s, %s)',
-                            (username, email, password, confirmpw, phone, role)
+                            'INSERT INTO user (username, email, password, phone, role) VALUES (%s, %s, md5(%s), %s, %s)',
+                            (username, email, password, phone, role)
                         )
                         self.con.mysql.commit()
                         cur.close()
@@ -207,7 +208,7 @@ class TiketKonserApp:
                 phone = request.form['phone']
                 tanggal = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
                 cur = self.con.mysql.cursor()
-                cur.execute('SELECT harga FROM harga_per_kategori WHERE lokasi_id = %s', (lokasi_id,))
+                cur.execute('SELECT harga FROM kategori_tempat_duduk WHERE lokasi_id = %s', (lokasi_id,))
                 harga = cur.fetchall()
                 price = []
                 kategori = list(session['tmptduduk'].keys())
@@ -238,7 +239,7 @@ class TiketKonserApp:
                     'phone': phone,
                     'tanggal': tanggal,
                     'lokasi':lokasi,
-                    'totalsemuaharga' : session['totalsemuaharga'], 
+                    'totalsemuaharga' : f"{int(session['totalsemuaharga']):,}".replace(',', '.'), 
                     'totalsemuatiket' :session['totalsemuatiket'],
                     'data' : data
                 }
@@ -246,9 +247,9 @@ class TiketKonserApp:
                 for i in range(len(price)):
                     data_tiket.append({
                         'kategori':kategoridibeli[i],
-                        'totalharga':price[i],
+                        'totalharga':f'{price[i]:,}'.replace(',', '.'),
                         'totaltiket': totaltiket[i],
-                        'hargapertiket' : hargaperkategori[i]
+                        'hargapertiket' : f'{hargaperkategori[i]:,}'.replace(',', '.')
                     })
                 
                 render = render_template('purchasereport.html', data_report = data_report, data_tiket = data_tiket)
