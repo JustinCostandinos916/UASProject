@@ -4,7 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{url_for('static',filename='login.css')}}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <title>Home</title>
+    <style>
+      .password-container {
+        position: relative;
+        width: 312px;
+      }
+
+      input[type="password"],
+      input[type="text"] {
+        width: 312px;
+        padding: 10px;
+        padding-right: 40px;
+        box-sizing: border-box;
+      }
+
+      .toggle-password {
+        color: gray;
+        width: 21px;
+        height: 21px;
+        position: absolute;
+        top: 32%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        user-select: none;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -26,7 +53,10 @@
           </tr>
           <tr>
             <td>
-              <input type="password" name="password" placeholder="Password" />
+              <div class="password-container">
+                <input type="password" name="password" id="password" placeholder="Password" />
+                <i id="pw" class="toggle-password bi bi-eye-fill" onclick="togglePassword()"></i>
+              </div>
             </td>
           </tr>
           <tr>
@@ -61,5 +91,21 @@
         </div>
       </nav>
     </footer>
+    <script>
+      function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const toggleIcon = document.getElementById("pw");
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          toggleIcon.classList.remove("bi-eye-fill");
+          toggleIcon.classList.add("bi-eye-slash-fill");
+        } else {
+          passwordInput.type = "password";
+          toggleIcon.classList.remove("bi-eye-slash-fill");
+          toggleIcon.classList.add("bi-eye-fill");
+        }
+      }
+    </script>
   </body>
 </html>
