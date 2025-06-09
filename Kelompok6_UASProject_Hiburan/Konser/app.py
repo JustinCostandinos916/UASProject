@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file, make_response
 from config import Config
 from datetime import datetime
-from collections import OrderedDict
 from werkzeug.security import generate_password_hash
 import hashlib
 import os, pdfkit, pymysql
@@ -260,9 +259,12 @@ class TiketKonserApp:
                 base_dir = os.path.abspath(os.path.dirname(__file__))  
                 pdf_path = os.path.join(base_dir, 'purchasereport.pdf')
                 configpdf = pdfkit.configuration(wkhtmltopdf=r'D:\wkhtmltopdf\bin\wkhtmltopdf.exe')
-                pdfkit.from_string(render, pdf_path, configuration=configpdf)
-                return send_file('purchasereport.pdf', as_attachment=False)
-                # return render_template('home.html', b = session['totalsemuaharga'])
+                pdfkit.from_string(render, False, configuration=configpdf)
+                pdf_bytes = pdfkit.from_string(render, False, configuration=configpdf)  # Hasil langsung bytes
+                response = make_response(pdf_bytes)
+                response.headers['Content-Type'] = 'application/pdf'
+                response.headers['Content-Disposition'] = 'inline; filename=purchasereport.pdf'
+                return response
                 
         @self.app.route('/admin/export-pdf', endpoint='export_admin_dashboard_pdf')
         def export_admin_dashboard_pdf():
@@ -358,9 +360,9 @@ class TiketKonserApp:
             cur = self.con.mysql.cursor(pymysql.cursors.DictCursor)
             cur.execute('SELECT password FROM user WHERE (username = %s OR email = %s OR phone = %s) AND password = %s', (username, username, username, password))
             select = cur.fetchone()
-            # return render_template('home.html', b=password)
             if select:
                 cur.execute("UPDATE user SET password = md5(%s) WHERE (username = %s OR email = %s OR phone = %s) AND password = %s", (new_password, username, username, username, password))
+                self.con.mysql.commit()
                 return redirect(url_for('login'))
             else:
                 flash('Username atau Password Salah!')
